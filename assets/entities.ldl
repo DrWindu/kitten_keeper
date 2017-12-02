@@ -1,0 +1,9 @@
+__models__ = {
+	enabled = false
+	children = {
+	}
+}
+
+scene = {
+	transform = translate(0, 0, 0.1)
+}
