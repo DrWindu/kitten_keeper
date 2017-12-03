@@ -131,7 +131,7 @@ void MainState::initialize() {
 
 	_scene       = _entities.findByName("scene");
 
-	registerLevel("test.json");
+	registerLevel("map0.json");
 
 //	loadSound("arrival.wav");
 
@@ -139,17 +139,17 @@ void MainState::initialize() {
 
 //	loader()->load<ImageLoader>("battery1.png");
 
-	Widget* test = _gui.createWidget<Widget>();
-	test->place(Vector2(256, 128));
-	test->resize(Vector2(512, 512));
-	test->setFrameTexture("frame.png");
-	test->setFrameColor(Vector4(1, 0, 0, 1));
-
-	Widget* test2 = test->createChild<Widget>();
-	test2->place(Vector2(128, 128));
-	test2->resize(Vector2(256, 256));
-	test2->setFrameTexture("white.png");
-	test2->setFrameColor(Vector4(0, 1, 0, 1));
+//	Widget* test = _gui.createWidget<Widget>();
+//	test->place(Vector2(256, 128));
+//	test->resize(Vector2(512, 512));
+//	test->setFrameTexture("frame.png");
+//	test->setFrameColor(Vector4(1, 0, 0, 1));
+//
+//	Widget* test2 = test->createChild<Widget>();
+//	test2->place(Vector2(128, 128));
+//	test2->resize(Vector2(256, 256));
+//	test2->setFrameTexture("white.png");
+//	test2->setFrameColor(Vector4(0, 1, 0, 1));
 
 	loader()->waitAll();
 

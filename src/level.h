@@ -41,9 +41,9 @@ using namespace lair;
 
 
 enum {
-	TILE_SET_WIDTH  = 16,
-	TILE_SET_HEIGHT = 16,
-	TILE_SIZE       = 24,
+	TILE_SET_WIDTH  = 4,
+	TILE_SET_HEIGHT = 4,
+	TILE_SIZE       = 128,
 };
 
 enum HitFlags {

@@ -197,7 +197,7 @@ void SplashState::updateTick() {
 
 	if (_skipTime <= 0
 	|| _skipInput->justPressed()) {
-		// ESC quite the game.
+		// ESC quits the game.
 		if(sys()->getKeyState(SDL_SCANCODE_ESCAPE)) {
 			_splashQueue.clear();
 			_nextState = nullptr;

@@ -50,7 +50,7 @@ Game::Game(int argc, char** argv)
     : GameBase(argc, argv),
       _mainState(),
       _splashState(),
-      _levelPath("test.json") {
+      _levelPath("map0.json") {
 	serializer().registerType<Shape2D>();
 	serializer().registerType<Shape2DVector>();
 
