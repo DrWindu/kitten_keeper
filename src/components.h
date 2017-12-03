@@ -51,8 +51,6 @@ enum DirFlags {
 	DIR_RIGHT = 1 << RIGHT,
 };
 
-typedef float stat;
-
 class TriggerComponent : public Component {
 public:
 	typedef TriggerComponentManager Manager;
@@ -99,11 +97,23 @@ public:
 	static const PropertyList& properties();
 
 public:
+	typedef float stat;
+	typedef enum {
+		WANDERING,
+		WALKING,
+		SLEEPING,
+		PLAYING,
+		EATING
+	} status;
+
+	unsigned s; // Not "status s;" because fuck it, that's why.
+	double t;
+	Vector2 dst;
+
 	stat sick;
 	stat tired;
 	stat bored;
 	stat hungry;
-	double t;
 };
 
 class KittenComponentManager : public DenseComponentManager<KittenComponent> {
