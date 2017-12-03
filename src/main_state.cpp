@@ -469,8 +469,8 @@ EntityRef MainState::createTrigger(EntityRef parent, const char* name, const Ali
 
 	CollisionComponent* cc = _collisions.addComponent(entity);
 	cc->addShape(Shape2D(box));
-	cc->setHitMask(HIT_PLAYER | HIT_TRIGGER);
-	cc->setIgnoreMask(HIT_TRIGGER);
+//	cc->setHitMask(HIT_PLAYER | HIT_TRIGGER);
+//	cc->setIgnoreMask(HIT_TRIGGER);
 
 	_triggers.addComponent(entity);
 
