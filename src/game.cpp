@@ -53,9 +53,6 @@ Game::Game(int argc, char** argv)
       _levelPath("map0.json") {
 	serializer().registerType<Shape2D>();
 	serializer().registerType<Shape2DVector>();
-
-	if(argc > 1)
-		_levelPath = argv[1];
 }
 
 
@@ -65,6 +62,9 @@ Game::~Game() {
 
 void Game::initialize() {
 	GameBase::initialize(_config);
+
+	if(this->argc() > 1)
+		_levelPath = this->argv()[1];
 
 #ifdef LAIR_DATA_DIR
 	_dataPath = LAIR_DATA_DIR;

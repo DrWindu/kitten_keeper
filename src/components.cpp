@@ -70,7 +70,7 @@ const PropertyList& KittenComponent::properties() {
 
 
 KittenComponentManager::KittenComponentManager()
-    : DenseComponentManager<KittenComponent>("trigger", 128)
+    : DenseComponentManager<KittenComponent>("kitten", 128)
 {
 }
 
@@ -95,6 +95,6 @@ const PropertyList& ToyComponent::properties() {
 
 
 ToyComponentManager::ToyComponentManager()
-    : DenseComponentManager<ToyComponent>("trigger", 128)
+    : DenseComponentManager<ToyComponent>("toy", 128)
 {
 }
