@@ -31,6 +31,11 @@
 #include "ui/widget.h"
 
 class MainState;
+class ToyComponent;
+
+enum {
+	PLACEMENT_TILE_SIZE = 16,
+};
 
 class GameView : public Widget {
 public:
@@ -41,6 +46,9 @@ public:
 	void setMainState(MainState* mainState);
 
 	lair::Vector2 sceneFromScreen(lair::Vector2 screen) const;
+
+	lair::Vector2 roundPlacement(const lair::Vector2& p) const;
+	bool canPlaceToy(ToyComponent* toy, const lair::Vector2& scenePos);
 
 	lair::EntityRef grabEntity();
 	void beginGrab(lair::EntityRef& toy, const lair::Vector2& scenePos);

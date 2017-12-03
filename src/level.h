@@ -48,8 +48,8 @@ enum {
 
 enum HitFlags {
 	HIT_SOLID     = 0x01,
-	HIT_PLAYER    = 0x02,
-	HIT_CHARACTER = 0x04,
+	HIT_KITTEN    = 0x02,
+	HIT_TOY       = 0x04,
 	HIT_TRIGGER   = 0x08,
 };
 

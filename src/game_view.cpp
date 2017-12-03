@@ -48,6 +48,25 @@ lair::Vector2 GameView::sceneFromScreen(lair::Vector2 screen) const {
 	return Vector2();
 }
 
+lair::Vector2 GameView::roundPlacement(const lair::Vector2& p) const {
+	return (p / PLACEMENT_TILE_SIZE).array().round().matrix() * PLACEMENT_TILE_SIZE;
+}
+
+bool GameView::canPlaceToy(ToyComponent* toy, const lair::Vector2& scenePos) {
+	Vector2 size = toy->size.cast<float>() * PLACEMENT_TILE_SIZE;
+	Vector2 epsilon(0.1, 0.1);
+	AlignedBox2 box(scenePos + epsilon, scenePos + size - 2 * epsilon);
+	bool canPlace = !_mainState->_level->hitTest(box);
+
+	if(canPlace) {
+		std::deque<EntityRef> hits;
+		_mainState->_collisions.hitTest(hits, box, HIT_TOY, toy->entity());
+		canPlace = hits.empty();
+	}
+
+	return canPlace;
+}
+
 EntityRef GameView::grabEntity() {
 	return _grabEntity;
 }
@@ -90,17 +109,15 @@ void GameView::moveGrabbed(const Vector2& scenePos) {
 	SpriteComponent* sprite = _mainState->_sprites.get(_grabEntity);
 	lairAssert(toy && sprite);
 
-	float tileSize = 16;
-	Vector2 size = toy->size.cast<float>() * tileSize;
-	Vector2 pos = ((scenePos - size / 2) / tileSize).array().round().matrix() * tileSize;
-
-	AlignedBox2 box(pos, pos + size);
-	bool canPlace = !_mainState->_level->hitTest(box);
+	Vector2 size = toy->size.cast<float>() * PLACEMENT_TILE_SIZE;
+	Vector2 pos = roundPlacement(scenePos - size / 2);
+	bool canPlace = canPlaceToy(toy, pos);
 
 	sprite->setColor(canPlace? Vector4(.8, 1, .8, .5):
 	                           Vector4(1.2, .8, .8, .5));
 
 	_grabEntity.placeAt(pos);
+	_mainState->_collisions.update(_grabEntity);
 }
 
 void GameView::endGrab() {
@@ -113,12 +130,7 @@ void GameView::endGrab() {
 	SpriteComponent* sprite = _mainState->_sprites.get(_grabEntity);
 	lairAssert(toy && sprite);
 
-	float tileSize = 16;
-	Vector2 size = toy->size.cast<float>() * tileSize;
-	Vector2 pos = _grabEntity.position2();
-
-	AlignedBox2 box(pos, pos + size);
-	bool canPlace = !_mainState->_level->hitTest(box);
+	bool canPlace = canPlaceToy(toy, _grabEntity.position2());
 
 	if(canPlace) {
 		toy->state = ToyComponent::PLACED;
