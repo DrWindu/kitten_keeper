@@ -57,6 +57,16 @@ unsigned Text::textureFlags() const {
 	return _textureFlags;
 }
 
+lair::Vector2 Text::textSize(const lair::String& text, int width) const {
+	BitmapFontAspectSP fontAspect = this->font();
+	if(!fontAspect)
+		return Vector2(0, 0);
+	const BitmapFont& font = fontAspect->get();
+
+	TextLayout layout = font.layoutText(text, width);
+	return layout.box().sizes();
+}
+
 void Text::setFont(lair::BitmapFontAspectSP font) {
 	_font = font;
 }
@@ -102,6 +112,8 @@ void Text::render(RenderPass& renderPass, SpriteRenderer* renderer,
 
 	Matrix4 transform = Matrix4::Identity();
 	transform.topRightCorner<2, 1>() = position;
+	transform(1, 3) -= (font.height() - font.glyph('O').size(1)) / 2;
+	transform(1, 3) = std::round(transform(1, 3));
 
 	TextLayout layout = font.layoutText(text, width);
 

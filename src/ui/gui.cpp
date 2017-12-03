@@ -35,6 +35,7 @@ Gui::Gui(SysModule* sys,
     , _loader(loader)
     , _spriteRenderer(spriteRenderer)
     , _mouseWidget(nullptr)
+    , _mouseGrabWidget(nullptr)
     , _logicScreenSize(Vector2(1920, 1080))
     , _realScreenSize(Vector2(1920, 1080))
 {
@@ -84,6 +85,10 @@ Widget* Gui::widgetAt(const Vector2& position) const {
 	return found;
 }
 
+lair::Vector2 Gui::logicScreenSize() const {
+	return _logicScreenSize;
+}
+
 void Gui::setLogicScreenSize(const Vector2& logicSize) {
 	_logicScreenSize = logicSize;
 }
@@ -98,6 +103,10 @@ Vector2 Gui::screenFromReal(int rx, int ry) const {
 	        .cwiseQuotient(_realScreenSize);
 }
 
+void Gui::setMouseGrabWidget(Widget* widget) {
+	_mouseGrabWidget = widget;
+}
+
 void Gui::dispatchEvent(Event& event) {
 	switch(event.type()) {
 	case EVENT_MOUSE: {
@@ -108,12 +117,18 @@ void Gui::dispatchEvent(Event& event) {
 			dispatchHoverEvent(w, position);
 		}
 
-		Widget* widget = widgetAt(position);
+		Widget* widget = _mouseGrabWidget;
 		if(widget) {
-			Widget* w = widget;
-			while(w && !event.isAccepted()) {
-				w->processEvent(event);
-				w = w->parent();
+			widget->processEvent(event);
+		}
+		else {
+			Widget* widget = widgetAt(position);
+			if(widget) {
+				Widget* w = widget;
+				while(w && !event.isAccepted()) {
+					w->processEvent(event);
+					w = w->parent();
+				}
 			}
 		}
 

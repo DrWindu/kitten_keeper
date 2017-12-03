@@ -95,6 +95,9 @@ void KittenComponentManager::update() {
 		KittenComponent& kitten = _components[k];
 		EntityRef entity = kitten.entity();
 
+		if(!entity.isEnabledRec() || !kitten.isEnabled())
+			continue;
+
 		kitten.sick   += 0;
 		kitten.tired  += KIT_FPT;
 		kitten.bored  += KIT_BPT;
@@ -115,7 +118,9 @@ void KittenComponentManager::update() {
 
 ToyComponent::ToyComponent(Manager* manager, _Entity* entity)
     : Component(manager, entity)
-    // TODO: Default toy states
+    , type()
+    , size(1, 1)
+    , state(NONE)
 {
 }
 
@@ -123,7 +128,8 @@ ToyComponent::ToyComponent(Manager* manager, _Entity* entity)
 const PropertyList& ToyComponent::properties() {
 	static PropertyList props;
 	if(props.nProperties() == 0) {
-		// TODO: Toys properties declarations.
+		props.addProperty("type", &ToyComponent::type);
+		props.addProperty("size", &ToyComponent::size);
 	}
 	return props;
 }
@@ -133,4 +139,18 @@ ToyComponentManager::ToyComponentManager(MainState* ms)
     : DenseComponentManager<ToyComponent>("toy", 128),
     _ms(ms)
 {
+}
+
+void ToyComponentManager::update() {
+	compactArray();
+
+	for(unsigned ti = 0; ti < nComponents(); ++ti) {
+		ToyComponent& toy = _components[ti];
+		EntityRef entity = toy.entity();
+
+		if(!entity.isEnabledRec() || !toy.isEnabled())
+			continue;
+
+		// TODO: update toy.
+	}
 }

@@ -69,6 +69,10 @@ void Label::setFont(const lair::Path& logicPath)
 	setFont(asset);
 }
 
+void Label::resizeToText() {
+	resize(_textInfo.textSize(_text) + _marginMin + _marginMax);
+}
+
 void Label::preRender(lair::SpriteRenderer* renderer) {
 	_textInfo.preRender(renderer);
 
@@ -82,7 +86,7 @@ float Label::render(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer
 
 	depth = renderFrame(renderPass, renderer, transform, depth);
 
-	Vector2 position = absolutePosition();
+	Vector2 position = absolutePosition() + Vector2(_marginMin(0), -_marginMax(1));
 	position(1) += size()(1);
 	_textInfo.render(renderPass, renderer, _text, size()(0), position,
 	                 depth, transform);

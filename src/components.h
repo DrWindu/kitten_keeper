@@ -122,6 +122,12 @@ class ToyComponent : public Component {
 public:
 	typedef ToyComponentManager Manager;
 
+	enum State {
+		NONE,
+		DRAGGED,
+		PLACED,
+	};
+
 public:
 	ToyComponent(Manager* manager, _Entity* entity);
 	ToyComponent(const ToyComponent&)  = delete;
@@ -134,13 +140,20 @@ public:
 	static const PropertyList& properties();
 
 public:
-	// TODO: Toys states
+	lair::String   type;
+	lair::Vector2i size;
+
+	State         state;
+	State         startState;
+	lair::Vector2 startPos;
 };
 
 class ToyComponentManager : public DenseComponentManager<ToyComponent> {
 public:
 	ToyComponentManager(MainState* ms);
 	virtual ~ToyComponentManager() = default;
+
+	void update();
 
 public:
 	MainState* _ms;

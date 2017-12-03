@@ -19,44 +19,43 @@
  */
 
 
-#ifndef LD_40_UI_LABEL_H_
-#define LD_40_UI_LABEL_H_
+#ifndef LD_40_GAME_VIEW_H_
+#define LD_40_GAME_VIEW_H_
 
 #include <vector>
 
 #include <lair/core/lair.h>
-#include <lair/core/shapes.h>
 
-#include <lair/render_gl2/texture.h>
+#include <lair/ec/entity.h>
 
-#include <lair/ec/sprite_renderer.h>
+#include "ui/widget.h"
 
-#include "text.h"
-#include "widget.h"
+class MainState;
 
-class Label : public Widget {
+class GameView : public Widget {
 public:
-	Label(Gui* gui, Widget* parent = nullptr);
+	GameView(Gui* gui, Widget* parent = nullptr);
 
-	const lair::String& text() const;
-	const Text& textInfo() const;
+	MainState* mainState() const;
 
-	Text& textInfo();
+	void setMainState(MainState* mainState);
 
-	void setText(const lair::String& text);
-	void setFont(lair::BitmapFontAspectSP font);
-	void setFont(lair::AssetSP font);
-	void setFont(const lair::Path& logicPath);
+	lair::Vector2 sceneFromScreen(lair::Vector2 screen) const;
 
-	void resizeToText();
+	lair::EntityRef grabEntity();
+	void beginGrab(lair::EntityRef& toy, const lair::Vector2& scenePos);
+	void moveGrabbed(const lair::Vector2& scenePos);
+	void endGrab();
+	void cancelGrab();
 
-	virtual void preRender(lair::SpriteRenderer* renderer);
-	virtual float render(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer,
-	                   const lair::Matrix4& transform, float depth = 0) override;
+	virtual void mousePressEvent(MouseEvent& event) override;
+	virtual void mouseReleaseEvent(MouseEvent& event) override;
+	virtual void mouseMoveEvent(MouseEvent& event) override;
 
 protected:
-	lair::String _text;
-	Text         _textInfo;
+	MainState* _mainState;
+
+	lair::EntityRef _grabEntity;
 };
 
 

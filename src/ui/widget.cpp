@@ -29,11 +29,13 @@
 using namespace lair;
 
 Widget::Widget(Gui* gui, Widget* parent)
-    : _gui     (gui)
-    , _parent  (nullptr)
-    , _enabled (true)
-    , _box     (Vector2(0, 0), Vector2(128, 128))
-    , _children()
+    : _gui      (gui)
+    , _parent   (nullptr)
+    , _enabled  (true)
+    , _box      (Vector2(0, 0), Vector2(128, 128))
+    , _marginMin(Vector2(0, 0))
+    , _marginMax(Vector2(0, 0))
+    , _children ()
 {
 	lairAssert(_gui);
 
@@ -118,6 +120,21 @@ void Widget::resize(const Vector2& size) {
 	_box.max() = _box.min() + size;
 }
 
+void Widget::setMargin(float margin) {
+	_marginMin = Vector2(margin, margin);
+	_marginMax = _marginMin;
+}
+
+void Widget::setMargin(float hMargin, float vMargin) {
+	_marginMin = Vector2(hMargin, vMargin);
+	_marginMax = _marginMin;
+}
+
+void Widget::setMargin(float top, float right, float bottom, float left) {
+	_marginMin = Vector2(left, bottom);
+	_marginMax = Vector2(right, top);
+}
+
 void Widget::setFrameTexture(TextureAspectSP texture) {
 	_frame.setTexture(texture);
 }
@@ -185,6 +202,14 @@ Widget* Widget::widgetAt(const Vector2& position) {
 	return found;
 }
 
+void Widget::grabMouse() {
+	_gui->setMouseGrabWidget(this);
+}
+
+void Widget::releaseMouse() {
+	_gui->setMouseGrabWidget(nullptr);
+}
+
 void Widget::processEvent(Event& event) {
 	if(!_enabled)
 		return;
@@ -229,42 +254,42 @@ void Widget::processEvent(Event& event) {
 
 void Widget::mousePressEvent(MouseEvent& event) {
 	if(onMouseDown)
-		onMouseDown(event);
+		onMouseDown(this, event);
 	else
 		event.reject();
 }
 
 void Widget::mouseReleaseEvent(MouseEvent& event) {
 	if(onMouseUp)
-		onMouseUp(event);
+		onMouseUp(this, event);
 	else
 		event.reject();
 }
 
 void Widget::mouseMoveEvent(MouseEvent& event) {
 	if(onMouseMove)
-		onMouseMove(event);
+		onMouseMove(this, event);
 	else
 		event.reject();
 }
 
 void Widget::mouseEnterEvent(HoverEvent& event) {
 	if(onMouseEnter)
-		onMouseEnter(event);
+		onMouseEnter(this, event);
 	else
 		event.reject();
 }
 
 void Widget::mouseLeaveEvent(HoverEvent& event) {
 	if(onMouseLeave)
-		onMouseLeave(event);
+		onMouseLeave(this, event);
 	else
 		event.reject();
 }
 
 void Widget::resizeEvent(ResizeEvent& event) {
 	if(onResize)
-		onResize(event);
+		onResize(this, event);
 	else
 		event.reject();
 }

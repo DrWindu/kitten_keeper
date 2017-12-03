@@ -66,6 +66,10 @@ public:
 	void place(const lair::Vector2& position);
 	void resize(const lair::Vector2& size);
 
+	void setMargin(float margin);
+	void setMargin(float hMargin, float vMargin);
+	void setMargin(float top, float right, float bottom, float left);
+
 	void setFrameTexture(lair::TextureAspectSP texture);
 	void setFrameTexture(lair::AssetSP texture);
 	void setFrameTexture(const lair::Path& logicPath);
@@ -81,6 +85,9 @@ public:
 
 	bool isInside(const lair::Vector2& position) const;
 	Widget* widgetAt(const lair::Vector2& position);
+
+	void grabMouse();
+	void releaseMouse();
 
 	virtual void processEvent(Event& event);
 
@@ -98,14 +105,14 @@ public:
 	                   const lair::Matrix4& transform, float depth = 0);
 
 public:
-	std::function<void(MouseEvent&)> onMouseDown;
-	std::function<void(MouseEvent&)> onMouseUp;
-	std::function<void(MouseEvent&)> onMouseMove;
+	std::function<void(Widget*, MouseEvent&)> onMouseDown;
+	std::function<void(Widget*, MouseEvent&)> onMouseUp;
+	std::function<void(Widget*, MouseEvent&)> onMouseMove;
 
-	std::function<void(HoverEvent&)> onMouseEnter;
-	std::function<void(HoverEvent&)> onMouseLeave;
+	std::function<void(Widget*, HoverEvent&)> onMouseEnter;
+	std::function<void(Widget*, HoverEvent&)> onMouseLeave;
 
-	std::function<void(ResizeEvent&)> onResize;
+	std::function<void(Widget*, ResizeEvent&)> onResize;
 
 protected:
 	float renderFrame(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer,
@@ -119,6 +126,8 @@ protected:
 	lair::String      _name;
 	bool              _enabled;
 	lair::AlignedBox2 _box;
+	lair::Vector2     _marginMin;
+	lair::Vector2     _marginMax;
 	WidgetVector      _children;
 
 	Frame _frame;

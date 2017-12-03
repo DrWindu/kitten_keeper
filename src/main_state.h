@@ -51,6 +51,9 @@ using namespace lair;
 class Game;
 class Level;
 class MainState;
+class Widget;
+class Label;
+class GameView;
 
 typedef std::shared_ptr<Level> LevelSP;
 typedef std::unordered_map<Path, LevelSP, boost::hash<Path>> LevelMap;
@@ -174,11 +177,16 @@ public:
 	LevelSP  _level;
 	Path     _levelPath;
 
+	GameView* _gameView;
+	Label*    _testButton;
+
 	EntityRef   _models;
 	EntityRef   _kittenModel;
+	EntityRef   _paniereModel;
 
 	EntityRef   _tileLayer;
 	EntityRef   _scene;
+	EntityRef   _toyLayer;
 	EntityRef   _kittenLayer;
 };
 

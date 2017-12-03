@@ -59,9 +59,13 @@ public:
 
 	Widget* widgetAt(const lair::Vector2& position) const;
 
+	lair::Vector2 logicScreenSize() const;
+
 	void setLogicScreenSize(const lair::Vector2& logicSize);
 	void setRealScreenSize(const lair::Vector2& realSize);
 	lair::Vector2 screenFromReal(int rx, int ry) const;
+
+	void setMouseGrabWidget(Widget* widget);
 
 	void dispatchEvent(Event& event);
 	void dispatchHoverEvent(Widget* widget, const lair::Vector2& position);
@@ -83,6 +87,7 @@ protected:
 	WidgetVector  _widgets;
 	lair::Vector2 _lastMousePos;
 	Widget*       _mouseWidget;
+	Widget*       _mouseGrabWidget;
 
 	lair::Vector2 _logicScreenSize;
 	lair::Vector2 _realScreenSize;

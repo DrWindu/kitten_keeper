@@ -27,6 +27,7 @@
 
 #include "game.h"
 #include "level.h"
+#include "game_view.h"
 
 #include "main_state.h"
 
@@ -84,7 +85,10 @@ MainState::MainState(Game* game)
       _okInput(nullptr),
 
       _state(STATE_PLAY),
-      _transitionTime(0)
+      _transitionTime(0),
+
+      _gameView(nullptr),
+      _testButton(nullptr)
 {
 	_entities.registerComponentManager(&_sprites);
 	_entities.registerComponentManager(&_collisions);
@@ -132,8 +136,9 @@ void MainState::initialize() {
 	loadEntities("entities.ldl", _entities.root());
 
 	// TODO[Doc]: Here is how to fetch an entity defined in entities.ldl
-	_models      = _entities.findByName("__models__");
-	_kittenModel = _entities.findByName("kitten_model");
+	_models       = _entities.findByName("__models__");
+	_kittenModel  = _entities.findByName("kitten_model");
+	_paniereModel = _entities.findByName("paniere_model");
 
 	_scene       = _entities.findByName("scene");
 
@@ -143,7 +148,42 @@ void MainState::initialize() {
 
 //	loader()->load<ImageLoader>("battery1.png");
 
+	AssetSP font = loader()->loadAsset<BitmapFontLoader>("droid_sans_24.json");
+
+	// We need the font to properly resize the widgets.
+	loader()->waitAll();
+
 	_gui.setLogicScreenSize(Vector2(1920, 1080));
+
+	_gameView = _gui.createWidget<GameView>();
+	_gameView->setMainState(this);
+	_gameView->setName("game_view");
+
+	_testButton = _gui.createWidget<Label>();
+	_testButton->setName("test_button");
+	_testButton->setFrameTexture("white.png");
+	_testButton->setFrameColor(Vector4(.7, .7, .7, 1));
+	_testButton->setMargin(16, 8);
+	_testButton->setFont(font);
+	_testButton->setText("Test button");
+	_testButton->textInfo().setColor(Vector4(0, 0, 0, 1));
+	_testButton->place(Vector2(16, 16));
+	_testButton->resizeToText();
+
+	_testButton->onMouseEnter = [](Widget* w, HoverEvent& e) {
+		w->setFrameColor(Vector4(.8, .8, .8, 1));
+		e.accept();
+	};
+	_testButton->onMouseLeave = [](Widget* w, HoverEvent& e) {
+		w->setFrameColor(Vector4(.7, .7, .7, 1));
+		e.accept();
+	};
+	_testButton->onMouseUp = [this](Widget*, MouseEvent& e) {
+		dbgLogger.warning("Click");
+		EntityRef toy = _entities.cloneEntity(_paniereModel, _toyLayer, "paniere");
+		_gameView->beginGrab(toy, _gameView->sceneFromScreen(e.position()));
+		e.accept();
+	};
 
 	// DRAK DEBUG STUFF
 //	Widget* test = _gui.createWidget<Widget>();
@@ -378,8 +418,11 @@ void MainState::loadLevel(const Path& level) {
 	// TODO[Doc]: Here is how to create a "layer". Note it is slightly offset
 	// on the z-axis so it appear above the tilemap.
 	// You can add your own layer if required.
+	_toyLayer = _entities.createEntity(_scene, "toy_layer");
+	_toyLayer.placeAt(Vector3(0, 0, 0.1));
+
 	_kittenLayer = _entities.createEntity(_scene, "kitten_layer");
-	_kittenLayer.placeAt(Vector3(0, 0, 0.1));
+	_kittenLayer.placeAt(Vector3(0, 0, 0.2));
 
 	_level->start();
 

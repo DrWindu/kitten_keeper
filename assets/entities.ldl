@@ -26,6 +26,27 @@ __models__ = {
 				hungry = 42
 			}
 		}
+
+        paniere_model = {
+		    sprite = {
+			    texture       = "paniere.png"
+				anchor        = Vector(0, 0)
+				color         = Vector(1, 1, 1, 1)
+				tile_grid     = Vector(1, 1)
+				tile_index    = 0
+				blend         = alpha
+				texture_flags = "bilinear_no_mipmap | clamp"
+			}
+			collision = {
+			    shape       = ABox{ min = Vector(0, 0), size = Vector(64, 48) }
+				hit_mask    = 0x04
+				ignore_mask = 0x00
+			}
+			toy = {
+			    type = "sleep"
+				size = Vector(4, 3)
+			}
+		}
 	}
 }
 

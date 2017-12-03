@@ -44,6 +44,8 @@ public:
 	lair::BlendingMode blendingMode() const;
 	unsigned textureFlags() const;
 
+	lair::Vector2 textSize(const lair::String& text, int width = 99999) const;
+
 	void setFont(lair::BitmapFontAspectSP font);
 	void setColor(const lair::Vector4& color);
 	void setAnchor(const lair::Vector2& anchor);
