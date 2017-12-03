@@ -70,8 +70,8 @@ KittenComponent::KittenComponent(Manager* manager, _Entity* entity) :
 	bored(42),
 	hungry(42),
 	s(WANDERING),
-	dst(0,0),
-	t(0)
+	t(0),
+	dst(0,0)
 {
 }
 
@@ -83,9 +83,9 @@ const PropertyList& KittenComponent::properties() {
 		props.addProperty("tired",  &KittenComponent::tired);
 		props.addProperty("bored",  &KittenComponent::bored);
 		props.addProperty("hungry", &KittenComponent::hungry);
-		props.addProperty("dst",    &KittenComponent::dst);
 		props.addProperty("status", &KittenComponent::s);
 		props.addProperty("t",      &KittenComponent::t);
+		props.addProperty("dst",    &KittenComponent::dst);
 	}
 	return props;
 }
@@ -108,19 +108,23 @@ void KittenComponentManager::update() {
 		if(!entity.isEnabledRec() || !kitten.isEnabled())
 			continue;
 
-		kitten.sick   += 0;
+		// Basal metabolism.
+		if (kitten.sick)
+			kitten.sick += kitten.sick * 0.01;
+		else if (rand()%(30*TICKS_PER_SEC))
+			kitten.sick = 10;
 		kitten.tired  += KIT_FPT;
 		kitten.bored  += KIT_BPT;
 		kitten.hungry += KIT_HPT;
 
-		Vector2 npos;
+		Vector2 npos = entity.position2();
 		switch (kitten.s) {
 			case kitten.WANDERING:
 				do { npos = entity.position2() + Vector2(rand()%5-2, rand()%5-2); }
 				while (_ms->_level->inSolid(npos));
 				break;
 			case kitten.WALKING:
-				entity.moveTo(lerp(KIT_WALK, entity.position2(), kitten.dst));
+				npos = lerp(KIT_WALK, entity.position2(), kitten.dst);
 				break;
 			case kitten.SLEEPING:
 				kitten.tired -= KIT_REST;
@@ -135,7 +139,9 @@ void KittenComponentManager::update() {
 
 		entity.moveTo(npos);
 
-		kitten.t += TICK_LENGTH_IN_SEC;
+		kitten.t -= TICK_LENGTH_IN_SEC;
+
+		// Kitty is thinking.
 	}
 }
 

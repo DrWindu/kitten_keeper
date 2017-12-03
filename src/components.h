@@ -106,14 +106,14 @@ public:
 		EATING
 	} status;
 
-	unsigned s; // Not "status s;" because fuck it, that's why.
-	double t;
-	Vector2 dst;
-
 	stat sick;
 	stat tired;
 	stat bored;
 	stat hungry;
+
+	unsigned s; // Not "status s;" because fuck it, that's why.
+	double t;
+	Vector2 dst;
 };
 
 class KittenComponentManager : public DenseComponentManager<KittenComponent> {
