@@ -66,7 +66,7 @@ KittenComponent::KittenComponent(Manager* manager, _Entity* entity)
 const PropertyList& KittenComponent::properties() {
 	static PropertyList props;
 	if(props.nProperties() == 0) {
-		// TODO: Kitten properties declarations. This allows to set properties
+		// TODO[Doc]: Kitten properties declarations. This allows to set properties
 		// in ldl files AND to clone component automagically.
 		props.addProperty("test1", &KittenComponent::test1);
 		props.addProperty("test2", &KittenComponent::test2);
