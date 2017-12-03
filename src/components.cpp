@@ -55,7 +55,10 @@ TriggerComponentManager::TriggerComponentManager()
 
 KittenComponent::KittenComponent(Manager* manager, _Entity* entity)
     : Component(manager, entity)
-    // TODO: Default kitten states
+    // TODO[Doc]: Default kitten states
+    , test1(128, 128)
+    , test2(1500, 1000)
+    , t(0)
 {
 }
 
@@ -63,7 +66,11 @@ KittenComponent::KittenComponent(Manager* manager, _Entity* entity)
 const PropertyList& KittenComponent::properties() {
 	static PropertyList props;
 	if(props.nProperties() == 0) {
-		// TODO: Kitten properties declarations
+		// TODO: Kitten properties declarations. This allows to set properties
+		// in ldl files AND to clone component automagically.
+		props.addProperty("test1", &KittenComponent::test1);
+		props.addProperty("test2", &KittenComponent::test2);
+		props.addProperty("n", &KittenComponent::t);
 	}
 	return props;
 }
@@ -72,6 +79,25 @@ const PropertyList& KittenComponent::properties() {
 KittenComponentManager::KittenComponentManager()
     : DenseComponentManager<KittenComponent>("kitten", 128)
 {
+}
+
+
+void KittenComponentManager::update() {
+	// Some garbage collection...
+	compactArray();
+
+	// TODO[Doc]: Update kittens here (note: this function might need extra arguments).
+	for(unsigned ki = 0; ki < nComponents(); ++ki) {
+		KittenComponent& kitten = _components[ki];
+		EntityRef entity = kitten.entity();
+
+		if(kitten.t > 2)
+			kitten.t -= 2;
+		float t = fabs(kitten.t - 1);
+		entity.moveTo(lerp(t, kitten.test1, kitten.test2));
+
+		kitten.t += 0.003;
+	}
 }
 
 

@@ -129,7 +129,9 @@ void MainState::initialize() {
 	// TODO: load stuff.
 	loadEntities("entities.ldl", _entities.root());
 
+	// TODO[Doc]: Here is how to fetch an entity defined in entities.ldl
 	_models      = _entities.findByName("__models__");
+	_kittenModel = _entities.findByName("kitten_model");
 
 	_scene       = _entities.findByName("scene");
 
@@ -350,6 +352,15 @@ void MainState::loadLevel(const Path& level) {
 	tileLayer->setBlendingMode(BLEND_ALPHA);
 	tileLayer->setTextureFlags(Texture::BILINEAR_NO_MIPMAP | Texture::CLAMP);
 
+	// TODO[Doc]: Set this to false to hide the tilemap for debugging.
+	layer.setEnabled(true);
+
+	// TODO[Doc]: Here is how to create a "layer". Note it is slightly offset
+	// on the z-axis so it appear above the tilemap.
+	// You can add your own layer if required.
+	_kittenLayer = _entities.createEntity(_scene, "kitten_layer");
+	_kittenLayer.placeAt(Vector3(0, 0, 0.1));
+
 	_level->start();
 
 	setState(_nextState);
@@ -446,6 +457,10 @@ void MainState::startGame() {
 
 	loadLevel(_levelPath);
 
+	// TODO[Doc]: Here is how to create a kitten:
+	EntityRef kitten = _entities.cloneEntity(_kittenModel, _kittenLayer, "kitten");
+	kitten.placeAt(Vector2(960, 540));
+
 	//audio()->playMusic(assets()->getAsset("music.ogg"));
 //	audio()->playSound(assets()->getAsset("sound.ogg"), 2);
 }
@@ -463,9 +478,9 @@ void MainState::updateTick() {
 	}
 
 	if(_state == STATE_PLAY) {
-		// TODO: Gameplay goes here. Probably something like:
-		// _kitten.update();
-		// _toy.update();
+		// TODO[Doc]: Gameplay goes here. Probably something like:
+		_kittens.update();
+		// _toys.update();
 		// Note: take care of collisions !
 
 		_entities.updateWorldTransforms();

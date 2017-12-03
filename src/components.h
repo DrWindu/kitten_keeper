@@ -97,13 +97,18 @@ public:
 	static const PropertyList& properties();
 
 public:
-	// TODO: Kitten states
+	// TODO[Doc]: Kitten states: put whatever you need here !
+	Vector2 test1;
+	Vector2 test2;
+	double  t;
 };
 
 class KittenComponentManager : public DenseComponentManager<KittenComponent> {
 public:
 	KittenComponentManager();
 	virtual ~KittenComponentManager() = default;
+
+	void update();
 };
 
 

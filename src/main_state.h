@@ -175,8 +175,11 @@ public:
 	Path     _levelPath;
 
 	EntityRef   _models;
+	EntityRef   _kittenModel;
+
 	EntityRef   _tileLayer;
 	EntityRef   _scene;
+	EntityRef   _kittenLayer;
 };
 
 
