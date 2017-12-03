@@ -20,6 +20,7 @@
 
 
 #include "main_state.h"
+#include "level.h"
 
 #include "game_view.h"
 
@@ -90,13 +91,14 @@ void GameView::moveGrabbed(const Vector2& scenePos) {
 	lairAssert(toy && sprite);
 
 	float tileSize = 16;
-	Vector2 hSize = toy->size.cast<float>() * tileSize / 2;
-	Vector2 pos = ((scenePos - hSize) / tileSize).array().round().matrix() * tileSize;
+	Vector2 size = toy->size.cast<float>() * tileSize;
+	Vector2 pos = ((scenePos - size / 2) / tileSize).array().round().matrix() * tileSize;
 
-	bool canPlace = true;
+	AlignedBox2 box(pos, pos + size);
+	bool canPlace = !_mainState->_level->hitTest(box);
 
 	sprite->setColor(canPlace? Vector4(.8, 1, .8, .5):
-	                           Vector4(1, .8, .8, .5));
+	                           Vector4(1.2, .8, .8, .5));
 
 	_grabEntity.placeAt(pos);
 }
@@ -111,14 +113,20 @@ void GameView::endGrab() {
 	SpriteComponent* sprite = _mainState->_sprites.get(_grabEntity);
 	lairAssert(toy && sprite);
 
-	bool canPlace = true;
+	float tileSize = 16;
+	Vector2 size = toy->size.cast<float>() * tileSize;
+	Vector2 pos = _grabEntity.position2();
 
-	if(!canPlace) {
-		cancelGrab();
-	}
-	else {
+	AlignedBox2 box(pos, pos + size);
+	bool canPlace = !_mainState->_level->hitTest(box);
+
+	if(canPlace) {
 		toy->state = ToyComponent::PLACED;
 		sprite->setColor(Vector4(1, 1, 1, 1));
+	}
+	else {
+		// TODO: Some noise.
+		return;
 	}
 
 	releaseMouse();
@@ -152,27 +160,32 @@ void GameView::mousePressEvent(MouseEvent& event) {
 	if(!_grabEntity.isValid()) {
 		// TODO: picking.
 	}
-	else {
-		event.reject();
-	}
+
+	event.reject();
 }
 
 void GameView::mouseReleaseEvent(MouseEvent& event) {
 	if(_grabEntity.isValid()) {
-		endGrab();
-		event.accept();
+		if(event.button() == MOUSE_LEFT) {
+			endGrab();
+			event.accept();
+			return;
+		}
+		else if(event.button() == MOUSE_RIGHT) {
+			cancelGrab();
+			event.accept();
+			return;
+		}
 	}
-	else {
-		event.reject();
-	}
+	event.reject();
 }
 
 void GameView::mouseMoveEvent(MouseEvent& event) {
 	if(_grabEntity.isValid()) {
 		moveGrabbed(sceneFromScreen(event.position()));
 		event.accept();
+		return;
 	}
-	else {
-		event.reject();
-	}
+
+	event.reject();
 }

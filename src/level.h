@@ -86,8 +86,9 @@ public:
 	void start();
 	void stop();
 
-	TileMap::TileIndex getTile (const Vector2& pos);
-	bool inSolid (const Vector2& pos);
+	TileMap::TileIndex getTile (const Vector2& pos) const;
+	bool inSolid (const Vector2& pos) const;
+	bool hitTest(const AlignedBox2& box) const;
 
 	Box2 objectBox(const Json::Value& obj) const;
 

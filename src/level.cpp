@@ -154,15 +154,37 @@ void Level::stop() {
 }
 
 
-TileMap::TileIndex Level::getTile (const Vector2& pos) {
+TileMap::TileIndex Level::getTile (const Vector2& pos) const {
 	Vector2i tilexy = cellCoord(pos, _tileMap->height(0));
 	
 	return _tileMap->tile(tilexy[0], tilexy[1], 0);
 }
 
 
-bool Level::inSolid (const Vector2& pos) {
+bool Level::inSolid (const Vector2& pos) const {
 	return isSolid(getTile(pos));
+}
+
+
+bool Level::hitTest(const AlignedBox2& box) const {
+	int layer = 0;
+	int width  = _tileMap->width (layer);
+	int height = _tileMap->height(layer);
+	Vector2i begin(std::floor(box.min()(0) / TILE_SIZE),
+	               height - std::ceil (box.max()(1) / TILE_SIZE));
+	Vector2i end  (std::ceil (box.max()(0) / TILE_SIZE),
+	               height - std::floor(box.min()(1) / TILE_SIZE));
+
+	for(int y = begin(1); y < end(1); ++y) {
+		for(int x = begin(0); x < end(0); ++x) {
+			if(x < 0 || x >= width || y < 0 || y >= height
+			|| isSolid(_tileMap->tile(x, y, layer))) {
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
 
