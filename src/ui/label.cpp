@@ -77,6 +77,9 @@ void Label::preRender(lair::SpriteRenderer* renderer) {
 
 float Label::render(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer,
                     const lair::Matrix4& transform, float depth) {
+	if(!_enabled)
+		return depth;
+
 	depth = renderFrame(renderPass, renderer, transform, depth);
 
 	Vector2 position = absolutePosition();

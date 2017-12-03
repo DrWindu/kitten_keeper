@@ -66,7 +66,7 @@ MainState::MainState(Game* game)
 
       _inputs(sys(), &log()),
 
-      _gui(assets(), loader(), &_spriteRenderer),
+      _gui(sys(), assets(), loader(), &_spriteRenderer),
 
       _camera(),
 
@@ -141,14 +141,20 @@ void MainState::initialize() {
 
 //	loader()->load<ImageLoader>("battery1.png");
 
+	_gui.setLogicScreenSize(Vector2(1920, 1080));
+
 	// DRAK DEBUG STUFF
 //	Widget* test = _gui.createWidget<Widget>();
+//	test->setName("test");
+//	test->setEnabled(true);
 //	test->place(Vector2(256, 128));
 //	test->resize(Vector2(512, 512));
 //	test->setFrameTexture("frame.png");
 //	test->setFrameColor(Vector4(1, 0, 0, 1));
 
 //	auto test2 = test->createChild<Label>();
+//	test2->setName("test2");
+//	test2->setEnabled(true);
 //	test2->place(Vector2(128, 128));
 //	test2->resize(Vector2(256, 256));
 //	test2->setFrameTexture("white.png");
@@ -156,6 +162,18 @@ void MainState::initialize() {
 //	test2->setFont("droid_sans_24.json");
 //	test2->setText("Laboriosam eveniet et rerum nemo voluptatum sint fuga. Reprehenderit occaecati voluptatem officia corrupti et itaque veniam. Iure odit velit ea aut impedit. Eveniet explicabo quis est labore vero autem veniam quidem. Et maxime fugit qui sit sint dicta. Repellat inventore ullam totam et minima maiores in.");
 //	test2->textInfo().setColor(Vector4(1, 1, 1, 1));
+
+//	test->onMouseEnter = [test2](HoverEvent& event) {
+//		dbgLogger.warning("Enter");
+//		test2->setEnabled(true);
+//		event.accept();
+//	};
+
+//	test->onMouseLeave = [test2](HoverEvent& event) {
+//		dbgLogger.warning("Leave");
+//		test2->setEnabled(false);
+//		event.accept();
+//	};
 	// END DEBUG STUFF
 
 	loader()->waitAll();
@@ -568,6 +586,8 @@ void MainState::resizeEvent() {
 	             Vector3(window()->width(),
 	                     window()->height(), 1));
 	_camera.setViewBox(viewBox);
+
+	_gui.setRealScreenSize(Vector2(window()->width(), window()->height()));
 }
 
 

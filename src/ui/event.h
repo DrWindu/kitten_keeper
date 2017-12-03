@@ -27,6 +27,7 @@
 
 enum EventType {
 	EVENT_MOUSE,
+	EVENT_HOVER,
 	EVENT_RESIZE,
 };
 
@@ -41,16 +42,22 @@ public:
 	void accept();
 	void reject();
 
+	virtual std::ostream& write(std::ostream& out) const = 0;
+
 protected:
 	unsigned _type;
 	bool _accepted;
 };
 
+inline std::ostream& operator<<(std::ostream& out, const Event& event) {
+	return event.write(out);
+}
+
 
 enum MouseButton {
-	MOUSE_LEFT,
-	MOUSE_MIDDLE,
-	MOUSE_RIGHT,
+	MOUSE_LEFT   = (1 << 0),
+	MOUSE_MIDDLE = (1 << 1),
+	MOUSE_RIGHT  = (1 << 2),
 };
 
 
@@ -63,16 +70,38 @@ public:
 	};
 
 public:
-	MouseEvent(MouseType mouseType, const lair::Vector2& position, MouseButton button);
+	MouseEvent(MouseType mouseType, const lair::Vector2& position, unsigned button);
 
 	MouseType mouseType() const;
 	const lair::Vector2& position() const;
-	MouseButton button() const;
+	unsigned button() const;
+
+	virtual std::ostream& write(std::ostream& out) const override;
 
 protected:
 	MouseType     _mouseType;
 	lair::Vector2 _position;
-	MouseButton   _button;
+	unsigned      _button;
+};
+
+
+
+class HoverEvent : public Event {
+public:
+	enum HoverType {
+		ENTER,
+		LEAVE,
+	};
+
+public:
+	HoverEvent(HoverType hoverType);
+
+	HoverType hoverType() const;
+
+	virtual std::ostream& write(std::ostream& out) const override;
+
+protected:
+	HoverType     _hoverType;
 };
 
 
@@ -81,6 +110,8 @@ public:
 	ResizeEvent(const lair::Vector2& size);
 
 	const lair::Vector2& size() const;
+
+	virtual std::ostream& write(std::ostream& out) const override;
 
 protected:
 	lair::Vector2 _size;

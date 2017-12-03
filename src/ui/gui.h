@@ -26,6 +26,8 @@
 #include <lair/core/asset_manager.h>
 #include <lair/core/loader.h>
 
+#include <lair/sys_sdl2/sys_module.h>
+
 #include <lair/render_gl2/render_pass.h>
 
 #include <lair/ec/sprite_renderer.h>
@@ -34,7 +36,8 @@
 
 class Gui {
 public:
-	Gui(lair::AssetManager* assets,
+	Gui(lair::SysModule* sys,
+	    lair::AssetManager* assets,
 	    lair::LoaderManager* loader,
 	    lair::SpriteRenderer* spriteRenderer);
 	Gui(const Gui& ) = delete;
@@ -54,16 +57,35 @@ public:
 	void preRender();
 	void render(lair::RenderPass& renderPass, const lair::Matrix4& transform);
 
+	Widget* widgetAt(const lair::Vector2& position) const;
+
+	void setLogicScreenSize(const lair::Vector2& logicSize);
+	void setRealScreenSize(const lair::Vector2& realSize);
+	lair::Vector2 screenFromReal(int rx, int ry) const;
+
+	void dispatchEvent(Event& event);
+	void dispatchHoverEvent(Widget* widget, const lair::Vector2& position);
+
+	void dispatchMouseMoveEvent(const SDL_MouseMotionEvent& event);
+	void dispatchMouseButtonEvent(const SDL_MouseButtonEvent& event);
+	void dispatchMouseWheelEvent(const SDL_MouseWheelEvent& event);
+
 	lair::AssetManager* assets();
 	lair::LoaderManager* loader();
 	lair::SpriteRenderer* spriteRenderer();
 
 protected:
+	lair::SysModule*       _sys;
 	lair::AssetManager*    _assets;
 	lair::LoaderManager*   _loader;
 	lair::SpriteRenderer*  _spriteRenderer;
 
-	WidgetVector _widgets;
+	WidgetVector  _widgets;
+	lair::Vector2 _lastMousePos;
+	Widget*       _mouseWidget;
+
+	lair::Vector2 _logicScreenSize;
+	lair::Vector2 _realScreenSize;
 };
 
 

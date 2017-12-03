@@ -21,6 +21,7 @@
 
 #include "event.h"
 
+using namespace lair;
 
 Event::Event(unsigned type)
     : _type    (type)
@@ -48,7 +49,7 @@ void Event::reject() {
 }
 
 
-MouseEvent::MouseEvent(MouseType mouseType, const lair::Vector2& position, MouseButton button)
+MouseEvent::MouseEvent(MouseType mouseType, const lair::Vector2& position, unsigned button)
     : Event     (EVENT_MOUSE)
     , _mouseType(mouseType)
     , _position (position)
@@ -64,8 +65,52 @@ const lair::Vector2& MouseEvent::position() const {
 	return _position;
 }
 
-MouseButton MouseEvent::button() const {
+unsigned MouseEvent::button() const {
 	return _button;
+}
+
+std::ostream& MouseEvent::write(std::ostream& out) const {
+	switch(_mouseType) {
+	case MOUSE_DOWN: out << "<Event MouseDown"; break;
+	case MOUSE_UP:   out << "<Event MouseUp";   break;
+	case MOUSE_MOVE: out << "<Event MouseMove"; break;
+	}
+
+	out << " " << fmt(_position) << " buttons: (";
+
+	bool sep = false;
+	if(_button & MOUSE_LEFT) {
+		out << "left";
+		sep = true;
+	}
+	if(_button & MOUSE_MIDDLE) {
+		out << (sep? ", ": "") << "middle";
+		sep = true;
+	}
+	if(_button & MOUSE_RIGHT) {
+		out << (sep? ", ": "") << "right";
+		sep = true;
+	}
+
+	out << ")>";
+
+	return out;
+}
+
+
+HoverEvent::HoverEvent(HoverType hoverType)
+    : Event(EVENT_HOVER)
+    , _hoverType(hoverType)
+{
+}
+
+HoverEvent::HoverType HoverEvent::hoverType() const {
+	return _hoverType;
+}
+
+std::ostream& HoverEvent::write(std::ostream& out) const {
+	out << "<Event MouseHover " << ((hoverType() == ENTER)? "enter": "leave") << ">";
+	return out;
 }
 
 
@@ -77,4 +122,9 @@ ResizeEvent::ResizeEvent(const lair::Vector2& size)
 
 const lair::Vector2& ResizeEvent::size() const {
 	return _size;
+}
+
+std::ostream& ResizeEvent::write(std::ostream& out) const {
+	out << "<Event Resize " << fmt(_size) << ">";
+	return out;
 }

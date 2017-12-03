@@ -31,6 +31,7 @@ using namespace lair;
 Widget::Widget(Gui* gui, Widget* parent)
     : _gui     (gui)
     , _parent  (nullptr)
+    , _enabled (true)
     , _box     (Vector2(0, 0), Vector2(128, 128))
     , _children()
 {
@@ -56,6 +57,14 @@ Gui* Widget::gui() const {
 
 Widget* Widget::parent() const {
 	return _parent;
+}
+
+const String Widget::name() const {
+	return _name;
+}
+
+bool Widget::enabled() const {
+	return _enabled;
 }
 
 Vector2 Widget::position() const {
@@ -86,6 +95,18 @@ unsigned Widget::nChildren() const {
 
 Widget* Widget::child(unsigned i) const {
 	return _children[i];
+}
+
+const WidgetVector& Widget::children() const {
+	return _children;
+}
+
+void Widget::setName(const String& name) {
+	_name = name;
+}
+
+void Widget::setEnabled(bool enabled) {
+	_enabled = enabled;
 }
 
 void Widget::place(const lair::Vector2& position) {
@@ -141,7 +162,35 @@ void Widget::removeChild(Widget* child) {
 	_children.erase(it);
 }
 
+Box2 Widget::absoluteBox() const {
+	Vector2 pos = absolutePosition();
+	return Box2(pos, pos + _box.sizes());
+}
+
+bool Widget::isInside(const lair::Vector2& position) const {
+	return absoluteBox().contains(position);
+}
+
+Widget* Widget::widgetAt(const Vector2& position) {
+	Widget* found = nullptr;
+	for(Widget* child: _children) {
+		Widget* f = child->widgetAt(position);
+		if(f) found = f;
+	}
+
+	if(!found && isInside(position)) {
+		found = this;
+	}
+
+	return found;
+}
+
 void Widget::processEvent(Event& event) {
+	if(!_enabled)
+		return;
+
+//	dbgLogger.info(name(), ": ", event);
+
 	switch(event.type()) {
 	case EVENT_MOUSE: {
 		MouseEvent& mEvent = static_cast<MouseEvent&>(event);
@@ -158,6 +207,20 @@ void Widget::processEvent(Event& event) {
 		}
 		break;
 	}
+
+	case EVENT_HOVER: {
+		HoverEvent& hEvent = static_cast<HoverEvent&>(event);
+		switch(hEvent.hoverType()) {
+		case HoverEvent::ENTER:
+			mouseEnterEvent(hEvent);
+			break;
+		case HoverEvent::LEAVE:
+			mouseLeaveEvent(hEvent);
+			break;
+		}
+		break;
+	}
+
 	case EVENT_RESIZE:
 		resizeEvent(static_cast<ResizeEvent&>(event));
 		break;
@@ -165,19 +228,45 @@ void Widget::processEvent(Event& event) {
 }
 
 void Widget::mousePressEvent(MouseEvent& event) {
-	event.reject();
+	if(onMouseDown)
+		onMouseDown(event);
+	else
+		event.reject();
 }
 
 void Widget::mouseReleaseEvent(MouseEvent& event) {
-	event.reject();
+	if(onMouseUp)
+		onMouseUp(event);
+	else
+		event.reject();
 }
 
 void Widget::mouseMoveEvent(MouseEvent& event) {
-	event.reject();
+	if(onMouseMove)
+		onMouseMove(event);
+	else
+		event.reject();
+}
+
+void Widget::mouseEnterEvent(HoverEvent& event) {
+	if(onMouseEnter)
+		onMouseEnter(event);
+	else
+		event.reject();
+}
+
+void Widget::mouseLeaveEvent(HoverEvent& event) {
+	if(onMouseLeave)
+		onMouseLeave(event);
+	else
+		event.reject();
 }
 
 void Widget::resizeEvent(ResizeEvent& event) {
-	event.reject();
+	if(onResize)
+		onResize(event);
+	else
+		event.reject();
 }
 
 void Widget::preRender(lair::SpriteRenderer* renderer) {
@@ -187,15 +276,16 @@ void Widget::preRender(lair::SpriteRenderer* renderer) {
 
 float Widget::render(lair::RenderPass& renderPass, SpriteRenderer* renderer,
                     const Matrix4& transform, float depth) {
+	if(!_enabled)
+		return depth;
+
 	depth = renderFrame(renderPass, renderer, transform, depth);
 	return renderChildren(renderPass, renderer, transform, depth);
 }
 
 float Widget::renderFrame(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer,
                           const lair::Matrix4& transform, float depth) {
-	Vector2 pos = absolutePosition();
-	Box2 absBox(pos, pos + _box.sizes());
-	_frame.render(renderPass, renderer, transform, absBox, depth);
+	_frame.render(renderPass, renderer, transform, absoluteBox(), depth);
 
 	return depth + 1e-5;
 }
