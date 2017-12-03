@@ -53,12 +53,13 @@ TriggerComponentManager::TriggerComponentManager()
 //---------------------------------------------------------------------------//
 
 
-KittenComponent::KittenComponent(Manager* manager, _Entity* entity)
-    : Component(manager, entity)
-    // TODO[Doc]: Default kitten states
-    , test1(128, 128)
-    , test2(1500, 1000)
-    , t(0)
+KittenComponent::KittenComponent(Manager* manager, _Entity* entity) :
+	Component(manager, entity),
+	sick(42),
+	tired(42),
+	bored(42),
+	hungry(42),
+	t(0)
 {
 }
 
@@ -66,37 +67,46 @@ KittenComponent::KittenComponent(Manager* manager, _Entity* entity)
 const PropertyList& KittenComponent::properties() {
 	static PropertyList props;
 	if(props.nProperties() == 0) {
-		// TODO[Doc]: Kitten properties declarations. This allows to set properties
-		// in ldl files AND to clone component automagically.
-		props.addProperty("test1", &KittenComponent::test1);
-		props.addProperty("test2", &KittenComponent::test2);
-		props.addProperty("n", &KittenComponent::t);
+		props.addProperty("sick",   &KittenComponent::sick);
+		props.addProperty("tired",  &KittenComponent::tired);
+		props.addProperty("bored",  &KittenComponent::bored);
+		props.addProperty("hungry", &KittenComponent::hungry);
+		props.addProperty("t",      &KittenComponent::t);
 	}
 	return props;
 }
 
 
-KittenComponentManager::KittenComponentManager()
-    : DenseComponentManager<KittenComponent>("kitten", 128)
+KittenComponentManager::KittenComponentManager(MainState* ms)
+    : DenseComponentManager<KittenComponent>("kitten", 128),
+    _ms(ms)
 {
 }
 
+// Kitten constants : fatigue/boredom/hunger per tick.
+#define KIT_FPT 0.01
+#define KIT_BPT 0.05
+#define KIT_HPT 0.02
 
 void KittenComponentManager::update() {
 	// Some garbage collection...
 	compactArray();
 
-	// TODO[Doc]: Update kittens here (note: this function might need extra arguments).
-	for(unsigned ki = 0; ki < nComponents(); ++ki) {
-		KittenComponent& kitten = _components[ki];
+	for(unsigned k = 0 ; k < nComponents() ; ++k) {
+		KittenComponent& kitten = _components[k];
 		EntityRef entity = kitten.entity();
 
-		if(kitten.t > 2)
-			kitten.t -= 2;
-		float t = fabs(kitten.t - 1);
-		entity.moveTo(lerp(t, kitten.test1, kitten.test2));
+		kitten.sick   += 0;
+		kitten.tired  += KIT_FPT;
+		kitten.bored  += KIT_BPT;
+		kitten.hungry += KIT_HPT;
 
-		kitten.t += 0.003;
+		Vector2 npos;
+		do { npos = entity.position2() + Vector2(rand()%5-2, rand()%5-2); }
+		while (_ms->_level->inSolid(npos));
+		entity.moveTo(npos);
+
+		kitten.t += TICK_LENGTH_IN_SEC;
 	}
 }
 
@@ -120,7 +130,8 @@ const PropertyList& ToyComponent::properties() {
 }
 
 
-ToyComponentManager::ToyComponentManager()
-    : DenseComponentManager<ToyComponent>("toy", 128)
+ToyComponentManager::ToyComponentManager(MainState* ms)
+    : DenseComponentManager<ToyComponent>("toy", 128),
+    _ms(ms)
 {
 }

@@ -51,6 +51,8 @@ enum DirFlags {
 	DIR_RIGHT = 1 << RIGHT,
 };
 
+typedef float stat;
+
 class TriggerComponent : public Component {
 public:
 	typedef TriggerComponentManager Manager;
@@ -97,18 +99,22 @@ public:
 	static const PropertyList& properties();
 
 public:
-	// TODO[Doc]: Kitten states: put whatever you need here !
-	Vector2 test1;
-	Vector2 test2;
-	double  t;
+	stat sick;
+	stat tired;
+	stat bored;
+	stat hungry;
+	double t;
 };
 
 class KittenComponentManager : public DenseComponentManager<KittenComponent> {
 public:
-	KittenComponentManager();
+	KittenComponentManager(MainState* ms);
 	virtual ~KittenComponentManager() = default;
 
 	void update();
+
+public:
+	MainState* _ms;
 };
 
 
@@ -133,8 +139,11 @@ public:
 
 class ToyComponentManager : public DenseComponentManager<ToyComponent> {
 public:
-	ToyComponentManager();
+	ToyComponentManager(MainState* ms);
 	virtual ~ToyComponentManager() = default;
+
+public:
+	MainState* _ms;
 };
 
 

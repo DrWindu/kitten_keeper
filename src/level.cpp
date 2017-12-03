@@ -156,6 +156,18 @@ void Level::stop() {
 }
 
 
+TileMap::TileIndex Level::getTile (const Vector2& pos) {
+	Vector2i tilexy = cellCoord(pos, _tileMap->height(0));
+	
+	return _tileMap->tile(tilexy[0], tilexy[1], 0);
+}
+
+
+bool Level::inSolid (const Vector2& pos) {
+	return isSolid(getTile(pos));
+}
+
+
 Box2 Level::objectBox(const Json::Value& obj) const {
 	try {
 //		Json::Value props = obj["properties"];

@@ -1,13 +1,12 @@
 __models__ = {
-    enabled = false
+	enabled = false
 	children = {
-	    // TODO[Doc]: Here is a sample kitten model
 		kitten_model = {
-		    transform = translate(128, 256)
+			transform = translate(128, 256)
 
-            // Components
+			// Components
 			sprite = {
-			    texture       = "chat1.png"
+				texture       = "chat1.png"
 				anchor        = Vector(.5, .5)
 				color         = Vector(1, 1, 1, 1)
 				tile_grid     = Vector(1, 1)
@@ -16,23 +15,22 @@ __models__ = {
 				texture_flags = "bilinear_no_mipmap | clamp"
 			}
 			collision = {
-			    // TODO[Doc]: This will probably need to be tweaked.
 				shape       = ABox{ min = Vector(-32, -32), size = Vector(64, 64) }
-				// TODO[Doc]: Don't know what to put here...
 				hit_mask    = 0x01
 				ignore_mask = 0x00
 			}
 			kitten = {
-			    // TODO[Doc]: Here comes kitten component properties (see components.cpp)
-				test1 = Vector(128, 128)
-				test2 = Vector(1800, 128)
+				sick = 0
+				tired = 42
+				bored = 42
+				hungry = 42
 			}
 		}
 	}
 }
 
 scene = {
-    transform = translate(0, 0, 0.1)
+	transform = translate(0, 0, 0.1)
 
-    // Non-model entities are added as children here.
+	// Non-model entities are added as children here.
 }

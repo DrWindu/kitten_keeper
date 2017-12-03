@@ -43,7 +43,7 @@ using namespace lair;
 enum {
 	TILE_SET_WIDTH  = 4,
 	TILE_SET_HEIGHT = 4,
-	TILE_SIZE       = 128,
+	TILE_SIZE       = 64,
 };
 
 enum HitFlags {
@@ -85,6 +85,9 @@ public:
 
 	void start();
 	void stop();
+
+	TileMap::TileIndex getTile (const Vector2& pos);
+	bool inSolid (const Vector2& pos);
 
 	Box2 objectBox(const Json::Value& obj) const;
 

@@ -59,8 +59,8 @@ MainState::MainState(Game* game)
       _sprites(assets(), loader(), &_mainPass, &_spriteRenderer),
       _collisions(),
       _triggers(),
-      _kittens(),
-      _toys(),
+      _kittens(this),
+      _toys(this),
       _texts(loader(), &_mainPass, &_spriteRenderer),
       _tileLayers(loader(), &_mainPass, &_spriteRenderer),
 
@@ -101,6 +101,8 @@ MainState::~MainState() {
 
 
 void MainState::initialize() {
+	srand(time(nullptr));
+
 	_loop.reset();
 	_loop.setTickDuration(    ONE_SEC /  TICKS_PER_SEC);
 	_loop.setFrameDuration(   ONE_SEC /  FRAMES_PER_SEC);
@@ -120,11 +122,11 @@ void MainState::initialize() {
 	_inputs.mapScanCode(_quitInput,  SDL_SCANCODE_ESCAPE);
 	_inputs.mapScanCode(_leftInput,  SDL_SCANCODE_LEFT);
 	_inputs.mapScanCode(_rightInput, SDL_SCANCODE_RIGHT);
-	_inputs.mapScanCode(_downInput, SDL_SCANCODE_DOWN);
-	_inputs.mapScanCode(_upInput, SDL_SCANCODE_UP);
-	_inputs.mapScanCode(_okInput,  SDL_SCANCODE_SPACE);
-	_inputs.mapScanCode(_okInput,  SDL_SCANCODE_RETURN);
-	_inputs.mapScanCode(_okInput,  SDL_SCANCODE_RETURN2);
+	_inputs.mapScanCode(_downInput,  SDL_SCANCODE_DOWN);
+	_inputs.mapScanCode(_upInput,    SDL_SCANCODE_UP);
+	_inputs.mapScanCode(_okInput,    SDL_SCANCODE_SPACE);
+	_inputs.mapScanCode(_okInput,    SDL_SCANCODE_RETURN);
+	_inputs.mapScanCode(_okInput,    SDL_SCANCODE_RETURN2);
 
 	// TODO: load stuff.
 	loadEntities("entities.ldl", _entities.root());
@@ -477,10 +479,10 @@ void MainState::startGame() {
 
 	// TODO[Doc]: Here is how to create a kitten:
 	EntityRef kitten = _entities.cloneEntity(_kittenModel, _kittenLayer, "kitten");
-	kitten.placeAt(Vector2(960, 540));
+	kitten.placeAt(Vector2(120, 120));
 
 	//audio()->playMusic(assets()->getAsset("music.ogg"));
-//	audio()->playSound(assets()->getAsset("sound.ogg"), 2);
+	//audio()->playSound(assets()->getAsset("sound.ogg"), 2);
 }
 
 
