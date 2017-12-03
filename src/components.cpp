@@ -1,20 +1,20 @@
 /*
- *  Copyright (C) 2016 the authors (see AUTHORS)
+ *  Copyright (C) 2017 the authors (see AUTHORS)
  *
- *  This file is part of ld36.
+ *  This file is part of Kitten Keeper.
  *
- *  lair is free software: you can redistribute it and/or modify it
- *  under the terms of the GNU General Public License as published by
+ *  Kitten Keeper is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  lair is distributed in the hope that it will be useful, but
- *  WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  Kitten Keeper is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  *  General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with lair.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with Kitten Keeper.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -52,6 +52,10 @@ TriggerComponentManager::TriggerComponentManager()
 
 //---------------------------------------------------------------------------//
 
+// Kitten constants : fatigue/boredom/hunger per tick.
+#define KIT_FPT 0.01
+#define KIT_BPT 0.05
+#define KIT_HPT 0.02
 
 KittenComponent::KittenComponent(Manager* manager, _Entity* entity) :
 	Component(manager, entity),
@@ -82,11 +86,6 @@ KittenComponentManager::KittenComponentManager(MainState* ms)
     _ms(ms)
 {
 }
-
-// Kitten constants : fatigue/boredom/hunger per tick.
-#define KIT_FPT 0.01
-#define KIT_BPT 0.05
-#define KIT_HPT 0.02
 
 void KittenComponentManager::update() {
 	// Some garbage collection...
