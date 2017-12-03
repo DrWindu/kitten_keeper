@@ -26,6 +26,7 @@
 #include <map>
 
 #include <lair/core/lair.h>
+#include <lair/core/metatype.h>
 #include <lair/core/path.h>
 
 #include <lair/ec/entity.h>
@@ -128,6 +129,15 @@ public:
 };
 
 
+enum ToyType {
+	TOY_EAT,
+	TOY_PLAY,
+	TOY_PISS,
+	TOY_HEAL,
+	TOY_SLEEP,
+};
+const lair::EnumInfo* toyTypeInfo();
+
 class ToyComponent : public Component {
 public:
 	typedef ToyComponentManager Manager;
@@ -150,7 +160,7 @@ public:
 	static const PropertyList& properties();
 
 public:
-	lair::String   type;
+	ToyType        type;
 	lair::Vector2i size;
 
 	State         state;
@@ -168,6 +178,8 @@ public:
 public:
 	MainState* _ms;
 };
+
+LAIR_REGISTER_METATYPE(ToyType, "ToyType");
 
 
 #endif

@@ -149,6 +149,19 @@ void KittenComponentManager::update() {
 //---------------------------------------------------------------------------//
 
 
+const lair::EnumInfo* toyTypeInfo() {
+	static EnumInfo info("ToyType");
+	if(!info.nFields()) {
+		info.add(TOY_EAT,   "eat");
+		info.add(TOY_PLAY,  "play");
+		info.add(TOY_PISS,  "piss");
+		info.add(TOY_HEAL,  "heal");
+		info.add(TOY_SLEEP, "sleep");
+	}
+	return &info;
+}
+
+
 ToyComponent::ToyComponent(Manager* manager, _Entity* entity)
     : Component(manager, entity)
     , type()
@@ -161,7 +174,7 @@ ToyComponent::ToyComponent(Manager* manager, _Entity* entity)
 const PropertyList& ToyComponent::properties() {
 	static PropertyList props;
 	if(props.nProperties() == 0) {
-		props.addProperty("type", &ToyComponent::type);
+		props.addProperty("type", toyTypeInfo(), &ToyComponent::type);
 		props.addProperty("size", &ToyComponent::size);
 	}
 	return props;
