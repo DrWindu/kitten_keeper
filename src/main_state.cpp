@@ -23,6 +23,8 @@
 
 #include <lair/core/json.h>
 
+#include "ui/label.h"
+
 #include "game.h"
 #include "level.h"
 
@@ -131,36 +133,28 @@ void MainState::initialize() {
 
 	_scene       = _entities.findByName("scene");
 
-	registerLevel("map0.json");
-
 //	loadSound("arrival.wav");
 
 //	loadMusic("ending.mp3");
 
 //	loader()->load<ImageLoader>("battery1.png");
 
+	// DRAK DEBUG STUFF
 //	Widget* test = _gui.createWidget<Widget>();
 //	test->place(Vector2(256, 128));
 //	test->resize(Vector2(512, 512));
 //	test->setFrameTexture("frame.png");
 //	test->setFrameColor(Vector4(1, 0, 0, 1));
-//
-//	Widget* test2 = test->createChild<Widget>();
+
+//	auto test2 = test->createChild<Label>();
 //	test2->place(Vector2(128, 128));
 //	test2->resize(Vector2(256, 256));
 //	test2->setFrameTexture("white.png");
-//	test2->setFrameColor(Vector4(0, 1, 0, 1));
-
-	loader()->waitAll();
-
-	for(auto& pathLevel: _levelMap) {
-		LevelSP level = pathLevel.second;
-		AssetSP levelAsset = assets()->getAsset(level->path());
-		TileMap& tileMap = assets()->getAspect<TileMapAspect>(levelAsset)->_get();
-
-		Path tileset = tileMap.properties().get("tileset", "tileset.png").asString();
-		loader()->load<ImageLoader>(tileset);
-	}
+//	test2->setFrameColor(Vector4(0, 0, 0, 1));
+//	test2->setFont("droid_sans_24.json");
+//	test2->setText("Laboriosam eveniet et rerum nemo voluptatum sint fuga. Reprehenderit occaecati voluptatem officia corrupti et itaque veniam. Iure odit velit ea aut impedit. Eveniet explicabo quis est labore vero autem veniam quidem. Et maxime fugit qui sit sint dicta. Repellat inventore ullam totam et minima maiores in.");
+//	test2->textInfo().setColor(Vector4(1, 1, 1, 1));
+	// END DEBUG STUFF
 
 	loader()->waitAll();
 
@@ -359,8 +353,6 @@ void MainState::loadLevel(const Path& level) {
 	_level->start();
 
 	setState(_nextState);
-
-//	dumpEntityTree(log(), _entities.root());
 }
 
 
@@ -519,6 +511,7 @@ void MainState::updateFrame() {
 
 	_texts.createTextures();
 	_tileLayers.createTextures();
+	_gui.preRender();
 	renderer()->uploadPendingTextures();
 
 	glc->clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);

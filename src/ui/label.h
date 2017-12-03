@@ -19,8 +19,8 @@
  */
 
 
-#ifndef LD_40_UI_FRAME_H_
-#define LD_40_UI_FRAME_H_
+#ifndef LD_40_UI_LABEL_H_
+#define LD_40_UI_LABEL_H_
 
 #include <vector>
 
@@ -31,25 +31,30 @@
 
 #include <lair/ec/sprite_renderer.h>
 
-class Frame;
+#include "text.h"
+#include "widget.h"
 
-class Frame {
+class Label : public Widget {
 public:
-	Frame(lair::TextureAspectSP texture = nullptr,
-	      const lair::Vector4& color = lair::Vector4::Constant(1));
+	Label(Gui* gui, Widget* parent = nullptr);
 
-	lair::TextureAspectSP texture() const;
-	const lair::Vector4& color() const;
+	const lair::String& text() const;
+	const Text& textInfo() const;
 
-	void setTexture(lair::TextureAspectSP texture);
-	void setColor(const lair::Vector4& color);
+	Text& textInfo();
 
-	void render(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer,
-	            const lair::Matrix4& transform, const lair::Box2& box, float depth);
+	void setText(const lair::String& text);
+	void setFont(lair::BitmapFontAspectSP font);
+	void setFont(lair::AssetSP font);
+	void setFont(const lair::Path& logicPath);
+
+	virtual void preRender(lair::SpriteRenderer* renderer);
+	virtual float render(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer,
+	                   const lair::Matrix4& transform, float depth = 0) override;
 
 protected:
-	lair::TextureAspectWP _texture;
-	lair::Vector4         _color;
+	lair::String _text;
+	Text         _textInfo;
 };
 
 

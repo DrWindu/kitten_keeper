@@ -66,7 +66,7 @@ public:
 
 	template<typename T>
 	T* createChild() {
-		return new Widget(_gui, this);
+		return new T(_gui, this);
 	}
 
 	void addChild(Widget* child);
@@ -80,8 +80,15 @@ public:
 
 	virtual void resizeEvent(ResizeEvent& event);
 
-	virtual int render(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer,
-	                   const lair::Matrix4& transform, int depth = 0);
+	virtual void preRender(lair::SpriteRenderer* renderer);
+	virtual float render(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer,
+	                   const lair::Matrix4& transform, float depth = 0);
+
+protected:
+	float renderFrame(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer,
+	                  const lair::Matrix4& transform, float depth);
+	float renderChildren(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer,
+	                     const lair::Matrix4& transform, float depth);
 
 protected:
 	Gui*              _gui;

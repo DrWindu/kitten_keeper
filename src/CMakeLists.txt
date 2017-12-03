@@ -32,7 +32,9 @@ include_directories(
 add_executable(${CMAKE_PROJECT_NAME}
 	ui/event.cpp
 	ui/frame.cpp
+	ui/text.cpp
 	ui/widget.cpp
+	ui/label.cpp
 	ui/gui.cpp
 
 	main.cpp

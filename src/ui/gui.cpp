@@ -49,6 +49,12 @@ void Gui::removeWidget(Widget* widget) {
 	_widgets.erase(it);
 }
 
+void Gui::preRender() {
+	for(Widget* widget: _widgets) {
+		widget->preRender(_spriteRenderer);
+	}
+}
+
 void Gui::render(lair::RenderPass& renderPass, const Matrix4& transform) {
 	for(Widget* widget: _widgets) {
 		widget->render(renderPass, _spriteRenderer, transform);

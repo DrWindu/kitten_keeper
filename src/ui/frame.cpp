@@ -50,7 +50,7 @@ void Frame::setColor(const Vector4& color) {
 }
 
 void Frame::render(RenderPass& renderPass, SpriteRenderer* renderer,
-                   const Matrix4& transform, const Box2& box, int depth) {
+                   const Matrix4& transform, const Box2& box, float depth) {
 	TextureAspectSP texAspect = texture();
 	if(texAspect) {
 		if(!texAspect->isValid()) {
@@ -101,18 +101,19 @@ void Frame::render(RenderPass& renderPass, SpriteRenderer* renderer,
 		}
 		unsigned indexCount = renderer->indexCount() - firstIndex;
 
-		_states.shader       = renderer->shader().shader;
-		_states.buffer       = renderer->buffer();
-		_states.format       = renderer->format();
-		_states.texture      = &texAspect->_get();
-		_states.textureFlags = lair::Texture::BILINEAR_NO_MIPMAP;
-		_states.blendingMode = lair::BLEND_ALPHA;
+		RenderPass::DrawStates states;
+		states.shader       = renderer->shader().shader;
+		states.buffer       = renderer->buffer();
+		states.format       = renderer->format();
+		states.texture      = &texAspect->_get();
+		states.textureFlags = lair::Texture::BILINEAR_NO_MIPMAP;
+		states.blendingMode = lair::BLEND_ALPHA;
 
 		Vector4i tileInfo;
 		tileInfo << 1, 1, tex.width(), tex.height();
 		const ShaderParameter* params = renderer->addShaderParameters(
 		            renderer->shader(), transform, 0, tileInfo);
 
-		renderPass.addDrawCall(_states, params, 1 - (depth / 1e6f), firstIndex, indexCount);
+		renderPass.addDrawCall(states, params, 1 - depth, firstIndex, indexCount);
 	}
 }

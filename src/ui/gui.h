@@ -43,7 +43,7 @@ public:
 
 	template<typename T>
 	T* createWidget() {
-		T* widget = new Widget(this);
+		T* widget = new T(this);
 		addWidget(widget);
 		return widget;
 	}
@@ -51,6 +51,7 @@ public:
 	void addWidget(Widget* widget);
 	void removeWidget(Widget* widget);
 
+	void preRender();
 	void render(lair::RenderPass& renderPass, const lair::Matrix4& transform);
 
 	lair::AssetManager* assets();

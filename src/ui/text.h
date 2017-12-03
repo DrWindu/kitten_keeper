@@ -19,37 +19,50 @@
  */
 
 
-#ifndef LD_40_UI_FRAME_H_
-#define LD_40_UI_FRAME_H_
+#ifndef LD_40_UI_TEXT_H_
+#define LD_40_UI_TEXT_H_
 
 #include <vector>
 
 #include <lair/core/lair.h>
 #include <lair/core/shapes.h>
+#include <lair/core/bitmap_font.h>
 
 #include <lair/render_gl2/texture.h>
 
 #include <lair/ec/sprite_renderer.h>
+#include <lair/ec/bitmap_text_component.h>
 
-class Frame;
-
-class Frame {
+class Text {
 public:
-	Frame(lair::TextureAspectSP texture = nullptr,
-	      const lair::Vector4& color = lair::Vector4::Constant(1));
+	Text(lair::BitmapFontAspectSP font = nullptr,
+	     const lair::Vector4& color = lair::Vector4::Constant(1));
 
-	lair::TextureAspectSP texture() const;
+	lair::BitmapFontAspectSP font() const;
 	const lair::Vector4& color() const;
+	const lair::Vector2& anchor() const;
+	lair::BlendingMode blendingMode() const;
+	unsigned textureFlags() const;
 
-	void setTexture(lair::TextureAspectSP texture);
+	void setFont(lair::BitmapFontAspectSP font);
 	void setColor(const lair::Vector4& color);
+	void setAnchor(const lair::Vector2& anchor);
+	void setBlendingMode(lair::BlendingMode blendingMode);
+	void setTextureFlags(unsigned textureFlags);
 
+	void preRender(lair::SpriteRenderer* renderer);
 	void render(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer,
-	            const lair::Matrix4& transform, const lair::Box2& box, float depth);
+	            const lair::String& text, int width, const lair::Vector2& position,
+	            float depth, const lair::Matrix4& viewTransform);
 
 protected:
-	lair::TextureAspectWP _texture;
-	lair::Vector4         _color;
+	lair::BitmapFontAspectWP _font;
+	lair::TextureAspectWP    _texture;
+	lair::Vector4            _color;
+	lair::TextLayout         _layout;
+	lair::Vector2            _anchor;
+	lair::BlendingMode       _blendingMode;
+	unsigned                 _textureFlags;
 };
 
 

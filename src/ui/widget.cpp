@@ -180,15 +180,30 @@ void Widget::resizeEvent(ResizeEvent& event) {
 	event.reject();
 }
 
-int Widget::render(lair::RenderPass& renderPass, SpriteRenderer* renderer,
-                    const Matrix4& transform, int depth) {
+void Widget::preRender(lair::SpriteRenderer* renderer) {
+	for(Widget* child: _children)
+		child->preRender(renderer);
+}
+
+float Widget::render(lair::RenderPass& renderPass, SpriteRenderer* renderer,
+                    const Matrix4& transform, float depth) {
+	depth = renderFrame(renderPass, renderer, transform, depth);
+	return renderChildren(renderPass, renderer, transform, depth);
+}
+
+float Widget::renderFrame(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer,
+                          const lair::Matrix4& transform, float depth) {
 	Vector2 pos = absolutePosition();
 	Box2 absBox(pos, pos + _box.sizes());
 	_frame.render(renderPass, renderer, transform, absBox, depth);
 
-	depth += 1;
+	return depth + 1e-5;
+}
+
+float Widget::renderChildren(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer,
+                             const lair::Matrix4& transform, float depth) {
 	for(Widget* child: _children)
 		depth = child->render(renderPass, renderer, transform, depth);
 
-	return depth;
+	return depth + 1e-5;
 }
