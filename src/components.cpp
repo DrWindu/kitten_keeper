@@ -350,7 +350,7 @@ void KittenComponentManager::update() {
 			kitten.s = DECOMPOSING;
 			_ms->setSpawnDeath(_ms->_spawnCount, _ms->_deathCount + 1);
 			setAnim(kitten, ANIM_DEAD);
-			setBubble(kitten, BUBBLE_NONE);
+			setBubble(entity, BUBBLE_NONE);
 			kitten.setEnabled(false);
 			dbgLogger.warning("Kit iz ded.");
 			continue;
