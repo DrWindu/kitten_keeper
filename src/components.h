@@ -72,6 +72,12 @@ enum BubbleType {
 	BUBBLE_NONE
 };
 
+enum BypassDir {
+	BYPASS_NONE,
+	BYPASS_LEFT,
+	BYPASS_RIGHT,
+};
+
 enum KittenAnim {
 	ANIM_IDLE,
 	ANIM_UP,
@@ -148,6 +154,7 @@ public:
 	unsigned s; // Not "status s;" because fuck it, that's why.
 	double t;
 	Vector2 dst;
+	BypassDir bypass;
 
 	KittenAnim anim;
 	float      animTime;
