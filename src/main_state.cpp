@@ -618,6 +618,7 @@ void MainState::resizeEvent() {
 	_camera.setViewBox(viewBox);
 
 	_gui.setRealScreenSize(Vector2(window()->width(), window()->height()));
+	_gameView->resize(Vector2(window()->width(), window()->height()));
 }
 
 
