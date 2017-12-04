@@ -27,6 +27,23 @@ __models__ = {
 				needy = 5
 				status = 0
 			}
+
+            children = {
+			    bubble = {
+				    enabled   = false
+					transform = translate(32, 32)
+
+                    sprite = {
+					    texture       = "KittenStates.png"
+						anchor        = Vector(0, 0)
+						color         = Vector(1, 1, 1, 1)
+						tile_grid     = Vector(3, 2)
+						tile_index    = 0
+						blend         = alpha
+						texture_flags = "bilinear_no_mipmap | clamp"
+					}
+				}
+			}
 		}
 
         food_model = {

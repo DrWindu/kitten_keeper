@@ -61,6 +61,15 @@ typedef enum {
 	PEEING
 } status;
 
+enum BubbleType {
+	BUBBLE_NONE,
+	BUBBLE_TOY,
+	BUBBLE_FOOD,
+	BUBBLE_SLEEP,
+	BUBBLE_PILL,
+	BUBBLE_LOVE,
+};
+
 enum ToyType {
 	TOY_FEED,
 	TOY_PLAY,
@@ -134,6 +143,7 @@ public:
 	virtual ~KittenComponentManager() = default;
 
 
+	void setBubble(EntityRef kitten, BubbleType bubbleType);
 	void seek(KittenComponent& k, ToyType tt, bool now);
 	void update();
 

@@ -99,6 +99,28 @@ const PropertyList& KittenComponent::properties() {
 }
 
 
+KittenComponentManager::KittenComponentManager(MainState* ms)
+    : DenseComponentManager<KittenComponent>("kitten", 128),
+    _ms(ms)
+{
+}
+
+
+void KittenComponentManager::setBubble(EntityRef kitten, BubbleType bubbleType) {
+	EntityRef bubble = kitten.firstChild();
+	if(!bubble.isValid()) {
+		dbgLogger.error("Kitten with no bubble ?");
+		return;
+	}
+
+	SpriteComponent* sprite = _ms->_sprites.get(bubble);
+	if(sprite) {
+		bubble.setEnabled(bubbleType);
+		sprite->setTileIndex(bubbleType);
+	}
+}
+
+
 void KittenComponentManager::seek(KittenComponent& k, ToyType tt, bool now)
 {
 	if (tt != TOY_HEAL && !now && k.s != WANDERING)
@@ -114,12 +136,6 @@ void KittenComponentManager::seek(KittenComponent& k, ToyType tt, bool now)
 			return;
 		}
 	}
-}
-
-KittenComponentManager::KittenComponentManager(MainState* ms)
-    : DenseComponentManager<KittenComponent>("kitten", 128),
-    _ms(ms)
-{
 }
 
 /* stat: LOW, BAD, MAX (priority)
