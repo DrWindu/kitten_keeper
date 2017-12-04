@@ -38,8 +38,11 @@ public:
 	void setPicture(const lair::Path& logicPath);
 	void setFont(const lair::Path& logicPath);
 	void setModel(lair::EntityRef model);
+	void setCost(int cost);
 	void setToyName(const lair::String& name);
 	void setDescription(const lair::String& description);
+
+	void update();
 
 	void layout();
 
@@ -55,6 +58,7 @@ protected:
 	Label*  _tooltip;
 
 	lair::EntityRef _model;
+	int             _cost;
 	lair::String    _toyName;
 };
 

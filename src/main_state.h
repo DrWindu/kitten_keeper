@@ -80,8 +80,6 @@ typedef std::deque<CommandExpr> CommandList;
 
 enum State {
 	STATE_PLAY,
-	STATE_FADE_IN,
-	STATE_FADE_OUT,
 	STATE_PAUSE,
 };
 
@@ -105,8 +103,6 @@ public:
 	int execSingle(const std::string& cmd, EntityRef self = EntityRef());
 	int exec(int argc, const char** argv, EntityRef self = EntityRef());
 
-	void setState(State state, State nextState = STATE_PLAY);
-
 	void setLevel(const Path& level);
 	LevelSP registerLevel(const Path& level);
 	void loadLevel(const Path& level);
@@ -116,13 +112,20 @@ public:
 	void loadMusic(const Path& sound);
 	void playMusic(const Path& music);
 
-	ToyButton* createToyButton(EntityRef model, const String& name, const String& picture,
+	ToyButton* createToyButton(EntityRef model, int cost, const String& name, const String& picture,
 	                           const String& description);
 
 	EntityRef getEntity(const String& name, const EntityRef& ancestor = EntityRef());
 	EntityRef createTrigger(EntityRef parent, const char* name, const AlignedBox2& box);
 
 	void updateTriggers(bool disableCmds = false);
+
+	void showDialog(const String& message, const String& buttonText = "Continue",
+	                State state = STATE_PAUSE);
+	void closeDialog();
+
+	void setHappiness(float happiness);
+	void setMoney(int money);
 
 	void startGame();
 	void updateTick();
@@ -175,8 +178,8 @@ public:
 	Input*      _okInput;
 
 	State    _state;
-	State    _nextState;
-	float    _transitionTime;
+	float    _happiness;
+	int      _money;
 
 	LevelMap _levelMap;
 	LevelSP  _level;
@@ -189,7 +192,12 @@ public:
 	ToyButton*  _litterButton;
 	ToyButton*  _pillButton;
 	ToyButton*  _basketButton;
+	Label*      _happinessLabel;
+	Label*      _moneyLabel;
 	Vector2     _toyButtonPos;
+	Widget*     _dialog;
+	Label*      _dialogText;
+	Label*      _dialogButton;
 
 	EntityRef   _models;
 	EntityRef   _kittenModel;
