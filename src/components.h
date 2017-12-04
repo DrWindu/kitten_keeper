@@ -74,7 +74,7 @@ enum BubbleType {
 
 enum KittenAnim {
 	ANIM_IDLE,
-	ANIM_TOP,
+	ANIM_UP,
 	ANIM_RIGHT,
 	ANIM_DOWN,
 	ANIM_LEFT,

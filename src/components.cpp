@@ -138,10 +138,11 @@ void KittenComponentManager::setAnim(KittenComponent& kitten, KittenAnim anim) {
 		return;
 	}
 
+	kitten.anim = anim;
 	kitten.animTime = 0;
 	switch(anim) {
 	case ANIM_IDLE:  sprite->setTileIndex(10); break;
-	case ANIM_TOP:   sprite->setTileIndex(6); break;
+	case ANIM_UP:   sprite->setTileIndex(6); break;
 	case ANIM_RIGHT: sprite->setTileIndex(0); break;
 	case ANIM_DOWN:  sprite->setTileIndex(4); break;
 	case ANIM_LEFT:  sprite->setTileIndex(2); break;
@@ -372,6 +373,33 @@ void KittenComponentManager::update() {
 					seek(kitten,TOY_PLAY, threshold == KIT_BAD);
 				continue;
 			}
+		}
+
+		switch(kitten.s) {
+		case SITTING:
+		case EATING:
+		case PEEING:
+			setAnim(kitten, ANIM_IDLE);
+			break;
+		case WALKING: {
+			Vector2 v = kitten.dst - entity.position2();
+			int axis;
+			v.cwiseAbs().maxCoeff(&axis);
+			if(axis == 0 && v(axis) <  0) setAnim(kitten, ANIM_LEFT);
+			if(axis == 0 && v(axis) >= 0) setAnim(kitten, ANIM_RIGHT);
+			if(axis == 1 && v(axis) <  0) setAnim(kitten, ANIM_DOWN);
+			if(axis == 1 && v(axis) >= 0) setAnim(kitten, ANIM_UP);
+			break;
+		}
+		case SLEEPING:
+			setAnim(kitten, ANIM_SLEEP);
+			break;
+		case PLAYING:
+			setAnim(kitten, ANIM_PLAY);
+			break;
+		case DECOMPOSING:
+			setAnim(kitten, ANIM_DEAD);
+			break;
 		}
 
 		updateAnim(kitten);
