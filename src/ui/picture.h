@@ -19,8 +19,8 @@
  */
 
 
-#ifndef LD_40_UI_LABEL_H_
-#define LD_40_UI_LABEL_H_
+#ifndef LD_40_UI_PICTURE_H_
+#define LD_40_UI_PICTURE_H_
 
 #include <vector>
 
@@ -31,32 +31,29 @@
 
 #include <lair/ec/sprite_renderer.h>
 
-#include "text.h"
 #include "widget.h"
 
-class Label : public Widget {
+class Picture : public Widget {
 public:
-	Label(Gui* gui, Widget* parent = nullptr);
+	Picture(Gui* gui, Widget* parent = nullptr);
 
-	const lair::String& text() const;
-	const Text& textInfo() const;
+	void setPictureColor(const lair::Vector4& color);
+	void setTexture(lair::TextureAspectSP texture);
+	void setTexture(lair::AssetSP texture);
+	void setTexture(const lair::Path& logicPath);
+	void setBlendingMode(lair::BlendingMode blendingMode);
+	void setTextureFlags(unsigned flags);
 
-	Text& textInfo();
+	void resizeToPicture();
 
-	void setText(const lair::String& text);
-	void setFont(lair::BitmapFontAspectSP font);
-	void setFont(lair::AssetSP font);
-	void setFont(const lair::Path& logicPath);
-
-	void resizeToText(int width = 99999);
-
-	virtual void preRender(lair::SpriteRenderer* renderer);
 	virtual float render(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer,
 	                   const lair::Matrix4& transform, float depth = 0) override;
 
 protected:
-	lair::String _text;
-	Text         _textInfo;
+	lair::Vector4         _color;
+	lair::TextureAspectWP _texture;
+	lair::BlendingMode    _blendingMode;
+	unsigned              _textureFlags;
 };
 
 

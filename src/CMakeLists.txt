@@ -35,6 +35,7 @@ add_executable(${CMAKE_PROJECT_NAME}
 	ui/text.cpp
 	ui/widget.cpp
 	ui/label.cpp
+	ui/picture.cpp
 	ui/gui.cpp
 
 	main.cpp
@@ -42,6 +43,7 @@ add_executable(${CMAKE_PROJECT_NAME}
 	components.cpp
 	level.cpp
 	game_view.cpp
+	toy_button.cpp
 	main_state.cpp
 	splash_state.cpp
 )
