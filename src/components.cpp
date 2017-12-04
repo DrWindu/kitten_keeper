@@ -115,8 +115,11 @@ void KittenComponentManager::setBubble(EntityRef kitten, BubbleType bubbleType) 
 
 	SpriteComponent* sprite = _ms->_sprites.get(bubble);
 	if(sprite) {
-		bubble.setEnabled(bubbleType);
-		sprite->setTileIndex(bubbleType);
+		bubble.setEnabled(true);
+		if (bubbleType == BUBBLE_NONE)
+			bubble.setEnabled(false);
+		else
+			sprite->setTileIndex(bubbleType);
 	}
 }
 
@@ -172,11 +175,11 @@ void KittenComponentManager::update() {
 		if (kitten.bored  > KIT_LOW) { setBubble(entity, BUBBLE_TOY  ); }
 		if (kitten.tired  > KIT_LOW) { setBubble(entity, BUBBLE_SLEEP); }
 		if (kitten.hungry > KIT_LOW) { setBubble(entity, BUBBLE_FOOD ); }
-		if (kitten.needy  > KIT_LOW) { setBubble(entity, BUBBLE_SLEEP); }
+		if (kitten.needy  > KIT_LOW) { setBubble(entity, BUBBLE_PEE  ); }
 		if (kitten.bored  > KIT_BAD) { setBubble(entity, BUBBLE_TOY  ); }
 		if (kitten.tired  > KIT_BAD) { setBubble(entity, BUBBLE_SLEEP); }
 		if (kitten.hungry > KIT_BAD) { setBubble(entity, BUBBLE_FOOD ); }
-		if (kitten.needy  > KIT_BAD) { setBubble(entity, BUBBLE_SLEEP); }
+		if (kitten.needy  > KIT_BAD) { setBubble(entity, BUBBLE_PEE  ); }
 		if (kitten.sick   > KIT_LOW) { setBubble(entity, BUBBLE_PILL ); }
 
 		// Current activity.
@@ -292,13 +295,9 @@ void KittenComponentManager::update() {
 				kitten.sick = 0;
 				kitten.hungry = KIT_LOW;
 				kitten.tired = KIT_BAD;
-				dbgLogger.warning("Pillz here !");
-				continue;
-			} else {
+			} else
 				seek(kitten,TOY_HEAL, true);
-				dbgLogger.warning("Need a med-kit !");
-				continue;
-			}
+			continue;
 		}
 
 		for (KittenComponent::stat threshold: {KIT_BAD, KIT_LOW})
@@ -307,41 +306,29 @@ void KittenComponentManager::update() {
 				if (options & 0x04) {
 					kitten.s = PEEING;
 					kitten.t = 1;
-					dbgLogger.warning("Found litter. Now peeing right next to it.");
-				} else {
+				} else
 					seek(kitten,TOY_PISS, threshold == KIT_BAD);
-					dbgLogger.warning("Woopsie gotta go !");
-				}
 				continue;
 			} else if (kitten.hungry > threshold) { // 8/C
 				if (options & 0x01) {
 					kitten.s = EATING;
 					kitten.t = 2;
-					dbgLogger.warning("OM NOM NOM NOM !");
-				} else {
+				} else
 					seek(kitten,TOY_FEED, threshold == KIT_BAD);
-					dbgLogger.warning("Today's fish is trout à la crème. Enjoy your meal !");
-				}
 				continue;
 			} else if (kitten.tired > threshold) { // 9/D
 				if (options & 0x10) {
 					kitten.s = SLEEPING;
 					kitten.t = 5;
-					dbgLogger.warning("ZZZZzzzzz...");
-				} else {
+				} else
 					seek(kitten,TOY_SLEEP, threshold == KIT_BAD);
-					dbgLogger.warning("Kitty is sleepy, hollow.");
-				}
 				continue;
 			} else if (kitten.bored > threshold) { // A/E
 				if (options & 0x22) {
 					kitten.s = PLAYING;
 					kitten.t = 1;
-					dbgLogger.warning("Kitteh is entertaining itself with some thing it found.");
-				} else {
+				} else
 					seek(kitten,TOY_PLAY, threshold == KIT_BAD);
-					dbgLogger.warning("Soooo booored...");
-				}
 				continue;
 			}
 		}

@@ -28,13 +28,13 @@ __models__ = {
 				status = 0
 			}
 
-            children = {
-			    bubble = {
-				    enabled   = false
+			children = {
+				bubble = {
+					enabled   = false
 					transform = translate(32, 32)
 
-                    sprite = {
-					    texture       = "KittenStates.png"
+					sprite = {
+						texture       = "KittenStates.png"
 						anchor        = Vector(0, 0)
 						color         = Vector(1, 1, 1, 1)
 						tile_grid     = Vector(3, 2)
@@ -46,9 +46,9 @@ __models__ = {
 			}
 		}
 
-        food_model = {
-		    sprite = {
-			    texture       = "gamelle.png"
+		food_model = {
+			sprite = {
+				texture       = "gamelle.png"
 				anchor        = Vector(0, 0)
 				color         = Vector(1, 1, 1, 1)
 				tile_grid     = Vector(1, 1)
@@ -57,19 +57,19 @@ __models__ = {
 				texture_flags = "bilinear_no_mipmap | clamp"
 			}
 			collision = {
-			    shape       = ABox{ min = Vector(0, 0), size = Vector(48, 48) }
+				shape       = ABox{ min = Vector(0, 0), size = Vector(48, 48) }
 				hit_mask    = 0x04
 				ignore_mask = 0x00
 			}
 			toy = {
-			    type = eat
+				type = eat
 				size = Vector(3, 3)
 			}
 		}
 
-        toy_model = {
-		    sprite = {
-			    texture       = "jouet.png"
+		toy_model = {
+			sprite = {
+				texture       = "jouet.png"
 				anchor        = Vector(0, 0)
 				color         = Vector(1, 1, 1, 1)
 				tile_grid     = Vector(1, 1)
@@ -78,19 +78,19 @@ __models__ = {
 				texture_flags = "bilinear_no_mipmap | clamp"
 			}
 			collision = {
-			    shape       = ABox{ min = Vector(0, 0), size = Vector(48, 48) }
+				shape       = ABox{ min = Vector(0, 0), size = Vector(48, 48) }
 				hit_mask    = 0x04
 				ignore_mask = 0x00
 			}
 			toy = {
-			    type = play
+				type = play
 				size = Vector(3, 3)
 			}
 		}
 
-        litter_model = {
-		    sprite = {
-			    texture       = "litiere.png"
+		litter_model = {
+			sprite = {
+				texture       = "litiere.png"
 				anchor        = Vector(0, 0)
 				color         = Vector(1, 1, 1, 1)
 				tile_grid     = Vector(1, 1)
@@ -99,19 +99,19 @@ __models__ = {
 				texture_flags = "bilinear_no_mipmap | clamp"
 			}
 			collision = {
-			    shape       = ABox{ min = Vector(0, 0), size = Vector(64, 48) }
+				shape       = ABox{ min = Vector(0, 0), size = Vector(64, 48) }
 				hit_mask    = 0x04
 				ignore_mask = 0x00
 			}
 			toy = {
-			    type = piss
+				type = piss
 				size = Vector(4, 3)
 			}
 		}
 
-        pill_model = {
-		    sprite = {
-			    texture       = "medoc.png"
+		pill_model = {
+			sprite = {
+				texture       = "medoc.png"
 				anchor        = Vector(0, 0)
 				color         = Vector(1, 1, 1, 1)
 				tile_grid     = Vector(1, 1)
@@ -120,19 +120,19 @@ __models__ = {
 				texture_flags = "bilinear_no_mipmap | clamp"
 			}
 			collision = {
-			    shape       = ABox{ min = Vector(0, 0), size = Vector(48, 48) }
+				shape       = ABox{ min = Vector(0, 0), size = Vector(48, 48) }
 				hit_mask    = 0x04
 				ignore_mask = 0x00
 			}
 			toy = {
-			    type = heal
+				type = heal
 				size = Vector(3, 3)
 			}
 		}
 
-        basket_model = {
-		    sprite = {
-			    texture       = "paniere.png"
+		basket_model = {
+			sprite = {
+				texture       = "paniere.png"
 				anchor        = Vector(0, 0)
 				color         = Vector(1, 1, 1, 1)
 				tile_grid     = Vector(1, 1)
@@ -141,12 +141,12 @@ __models__ = {
 				texture_flags = "bilinear_no_mipmap | clamp"
 			}
 			collision = {
-			    shape       = ABox{ min = Vector(0, 0), size = Vector(64, 48) }
+				shape       = ABox{ min = Vector(0, 0), size = Vector(64, 48) }
 				hit_mask    = 0x04
 				ignore_mask = 0x00
 			}
 			toy = {
-			    type = sleep
+				type = sleep
 				size = Vector(4, 3)
 			}
 		}

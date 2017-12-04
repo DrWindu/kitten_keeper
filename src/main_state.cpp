@@ -418,12 +418,8 @@ void MainState::loadLevel(const Path& level) {
 	tileLayer->setBlendingMode(BLEND_ALPHA);
 	tileLayer->setTextureFlags(Texture::BILINEAR_NO_MIPMAP | Texture::CLAMP);
 
-	// TODO[Doc]: Set this to false to hide the tilemap for debugging.
 	layer.setEnabled(true);
 
-	// TODO[Doc]: Here is how to create a "layer". Note it is slightly offset
-	// on the z-axis so it appear above the tilemap.
-	// You can add your own layer if required.
 	_toyLayer = _entities.createEntity(_scene, "toy_layer");
 	_toyLayer.placeAt(Vector3(0, 0, 0.1));
 

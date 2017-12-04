@@ -63,12 +63,13 @@ typedef enum {
 } status;
 
 enum BubbleType {
-	BUBBLE_NONE,
+	BUBBLE_PEE,
 	BUBBLE_TOY,
 	BUBBLE_FOOD,
 	BUBBLE_SLEEP,
 	BUBBLE_PILL,
 	BUBBLE_LOVE,
+	BUBBLE_NONE
 };
 
 enum ToyType {
