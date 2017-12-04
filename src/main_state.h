@@ -127,6 +127,8 @@ public:
 	void setHappiness(float happiness);
 	void setMoney(int money);
 
+	EntityRef spawnKitten(const Vector2& pos = Vector2(-1, -1));
+
 	void startGame();
 	void updateTick();
 	void updateFrame();

@@ -581,12 +581,34 @@ void MainState::setMoney(int money) {
 }
 
 
+EntityRef MainState::spawnKitten(const Vector2& pos) {
+	EntityRef kitten = _entities.cloneEntity(_kittenModel, _kittenLayer, "kitten");
+
+	if(pos(0) >= 0) {
+		kitten.placeAt(pos);
+	}
+	else {
+		CollisionComponent* coll = _collisions.get(kitten);
+		lairAssert(coll);
+
+		AlignedBox2 box;
+		int tries = 0;
+		do {
+			kitten.placeAt(Vector2(rand() % (_level->tileMap()->width(0) * TILE_SIZE),
+			                       rand() % (_level->tileMap()->height(0) * TILE_SIZE)));
+			box = coll->shapes()[0].transformed(kitten.worldTransform()).boundingBox();
+			++tries;
+		} while(_level->hitTest(box) && tries < 10);
+	}
+
+	return kitten;
+}
+
+
 void MainState::startGame() {
 	loadLevel(_levelPath);
 
-	// TODO[Doc]: Here is how to create a kitten:
-	EntityRef kitten = _entities.cloneEntity(_kittenModel, _kittenLayer, "kitten");
-	kitten.placeAt(Vector2(120, 120));
+	spawnKitten(Vector2(120, 120));
 
 	setHappiness(1);
 	setMoney(100);
@@ -612,6 +634,8 @@ void MainState::updateTick() {
 #ifndef NDEBUG
 	if(_upInput->isPressed())
 		setMoney(_money + 5);
+	if(_rightInput->justPressed())
+		spawnKitten();
 #endif
 
 	if(_state == STATE_PLAY) {
