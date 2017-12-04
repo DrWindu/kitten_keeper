@@ -94,6 +94,8 @@ MainState::MainState(Game* game)
       _litterButton(nullptr),
       _pillButton(nullptr),
       _basketButton(nullptr),
+      _happinessLabel(nullptr),
+      _moneyLabel(nullptr),
       _toyButtonPos(8, 8),
       _dialog(nullptr),
       _dialogText(nullptr),
@@ -177,16 +179,33 @@ void MainState::initialize() {
 	_menu->setFrameTexture("white.png");
 	_menu->setFrameColor(Vector4(.8, .6, .3, 1));
 
-	_foodButton   = createToyButton(_foodModel, "food", "gamelle.png",
-	                                "Food\n\nBecause kittens need to eat. Can I haz Cheezburger ?");
-	_toyButton    = createToyButton(_toyModel, "toy", "jouet.png",
-	                                "Toy\n\nYaaay ! Toy ! Everything is a Toy. I toy. You toy.");
-	_litterButton = createToyButton(_litterModel, "litter", "litiere.png",
-	                                "Litter\n\nBecause kittens need to ***.");
-	_pillButton   = createToyButton(_pillModel, "pill", "medoc.png",
-	                                "Medecine\n\nHeal sick kittens. Also, DRUUUUUUUUUUG !");
-	_basketButton = createToyButton(_basketModel, "basket", "paniere.png",
-	                                "Basket\n\nIf I fit, I sleep.");
+	_foodButton   = createToyButton(_foodModel, 10, "food", "gamelle.png",
+	                                "Food\nCost: 10$\n\nBecause kittens need to eat. Can I haz Cheezburger ?");
+	_toyButton    = createToyButton(_toyModel, 20, "toy", "jouet.png",
+	                                "Toy\nCost: 20$\n\nYaaay ! Toy ! Everything is a Toy. I toy. You toy.");
+	_litterButton = createToyButton(_litterModel, 10, "litter", "litiere.png",
+	                                "Litter\nCost: 10$\n\nBecause kittens need to ***.");
+	_pillButton   = createToyButton(_pillModel, 50, "pill", "medoc.png",
+	                                "Medecine\nCost: 50$\n\nHeal sick kittens. Also, DRUUUUUUUUUUG !");
+	_basketButton = createToyButton(_basketModel, 50, "basket", "paniere.png",
+	                                "Basket\nCost: 50$\n\nIf I fit, I sleep.");
+
+	_happinessLabel = _menu->createChild<Label>();
+	_happinessLabel->setFont(font);
+	_happinessLabel->textInfo().setColor(Vector4(0, 0, 0, 1));
+	_happinessLabel->setText("Happiness: 100%");
+	_happinessLabel->resizeToText();
+	_toyButtonPos(0) += 24;
+	_happinessLabel->place(_toyButtonPos + Vector2(0, 80 - _happinessLabel->size()(1)) / 2);
+	_toyButtonPos(0) += _happinessLabel->size()(0) + 32;
+
+	_moneyLabel = _menu->createChild<Label>();
+	_moneyLabel->setFont(font);
+	_moneyLabel->textInfo().setColor(Vector4(0, 0, 0, 1));
+	_moneyLabel->setText("Money: 999999$");
+	_moneyLabel->resizeToText();
+	_moneyLabel->place(_toyButtonPos + Vector2(0, 80 - _moneyLabel->size()(1)) / 2);
+	_toyButtonPos(0) += _moneyLabel->size()(0) + 32;
 
 	_dialog = _gui.createWidget<Widget>();
 	_dialog->setEnabled(false);
@@ -204,6 +223,14 @@ void MainState::initialize() {
 	_dialogButton->textInfo().setColor(Vector4(1, 1, 1, 1));
 	_dialogButton->setMargin(32, 16);
 	_dialogButton->onMouseUp = std::bind(&MainState::closeDialog, this);
+	_dialogButton->onMouseEnter = [this](Widget*, HoverEvent& e) {
+		_dialogButton->setFrameColor(Vector4(.6, .7, .8, 1));
+		e.accept();
+	};
+	_dialogButton->onMouseLeave = [this](Widget*, HoverEvent& e) {
+		_dialogButton->setFrameColor(Vector4(.5, .6, .7, 1));
+		e.accept();
+	};
 
 	loader()->waitAll();
 
@@ -432,13 +459,14 @@ void MainState::playMusic(const Path& sound) {
 }
 
 
-ToyButton* MainState::createToyButton(EntityRef model, const String& name,
+ToyButton* MainState::createToyButton(EntityRef model, int cost, const String& name,
                                       const String& picture, const String& description) {
 	ToyButton* button = _gui.createWidget<ToyButton>();
 	button->place(_toyButtonPos);
 	button->setMainState(this);
 	button->setPicture(picture);
 	button->setModel(model);
+	button->setCost(cost);
 	button->setToyName(name);
 	button->setDescription(description);
 	button->layout();
@@ -534,12 +562,34 @@ void MainState::closeDialog() {
 	_state = STATE_PLAY;
 }
 
+
+void MainState::setHappiness(float happiness) {
+	_happiness = happiness;
+	_happinessLabel->setText(cat("Happiness: ", std::round(_happiness * 100), "%"));
+}
+
+
+void MainState::setMoney(int money) {
+	_money = money;
+	_moneyLabel->setText(cat("Money: ", _money, "$"));
+
+	_foodButton->update();
+	_toyButton->update();
+	_litterButton->update();
+	_pillButton->update();
+	_basketButton->update();
+}
+
+
 void MainState::startGame() {
 	loadLevel(_levelPath);
 
 	// TODO[Doc]: Here is how to create a kitten:
 	EntityRef kitten = _entities.cloneEntity(_kittenModel, _kittenLayer, "kitten");
 	kitten.placeAt(Vector2(120, 120));
+
+	setHappiness(1);
+	setMoney(100);
 
 	showDialog("Facilis ex assumenda quisquam dolor ipsam. Ut nostrum mollitia est eaque. Pariatur omnis alias quia necessitatibus voluptatibus iusto voluptates explicabo. Ut sed non quia possimus quo voluptas. Incidunt est eos in molestias qui. Itaque accusamus ea quis in molestiae.\n\nPorro aut adipisci vel natus. Sit est magni est est. Mollitia et suscipit debitis exercitationem soluta.\n\nDolores qui libero ad asperiores. Officiis ut sunt aut. Facilis perspiciatis voluptatem natus rerum distinctio excepturi aut.");
 
@@ -558,6 +608,11 @@ void MainState::updateTick() {
 	if(_quitInput->justPressed()) {
 		quit();
 	}
+
+#ifndef NDEBUG
+	if(_upInput->isPressed())
+		setMoney(_money + 5);
+#endif
 
 	if(_state == STATE_PLAY) {
 		_kittens.update();
