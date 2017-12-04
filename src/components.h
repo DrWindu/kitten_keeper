@@ -178,6 +178,7 @@ public:
 		NONE,
 		DRAGGED,
 		PLACED,
+		BUSY
 	};
 
 public:

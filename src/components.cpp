@@ -64,22 +64,22 @@ TriggerComponentManager::TriggerComponentManager()
 
 #define KIT_WALK 0.02f
 
-#define KIT_REST 0.05f
-#define KIT_PLAY 0.5f
-#define KIT_FEED 0.4f
-#define KIT_PISS 0.6f
+#define KIT_REST (2*KIT_FPT)
+#define KIT_PLAY (3*KIT_BPT)
+#define KIT_FEED (4*KIT_HPT)
+#define KIT_PISS (5*KIT_NPT)
 
 #define KIT_ANIM_LEN 0.4f
 
 KittenComponent::KittenComponent(Manager* manager, _Entity* entity) :
-	Component(manager, entity),
-	sick(0),
-	tired(2),
-	bored(2),
-	hungry(2),
-	needy(2),
-	s(SITTING),
-	t(0),
+    Component(manager, entity),
+    sick(0),
+    tired(2),
+    bored(2),
+    hungry(2),
+    needy(2),
+    s(SITTING),
+    t(0),
     dst(0,0),
     anim(ANIM_IDLE),
     animTime(0)
@@ -142,7 +142,7 @@ void KittenComponentManager::setAnim(KittenComponent& kitten, KittenAnim anim) {
 	kitten.animTime = 0;
 	switch(anim) {
 	case ANIM_IDLE:  sprite->setTileIndex(10); break;
-	case ANIM_UP:   sprite->setTileIndex(6); break;
+	case ANIM_UP:    sprite->setTileIndex(6); break;
 	case ANIM_RIGHT: sprite->setTileIndex(0); break;
 	case ANIM_DOWN:  sprite->setTileIndex(4); break;
 	case ANIM_LEFT:  sprite->setTileIndex(2); break;
@@ -179,7 +179,7 @@ void KittenComponentManager::seek(KittenComponent& k, ToyType tt, bool now)
 		if (t.type == tt && dist < range && t.state == t.PLACED) {
 			k.s = WALKING;
 			k.dst = t.entity().position2();
-			return;
+			range = dist;
 		}
 	}
 }
@@ -502,6 +502,44 @@ void ToyComponentManager::update() {
 		if(!entity.isEnabledRec() || !toy.isEnabled())
 			continue;
 
-		// TODO: update toy.
+		// Count current user and set busy state.
+		if (toy.state == toy.PLACED || toy.state == toy.BUSY) {
+			toy.state = toy.PLACED;
+			std::deque<EntityRef> hits;
+			AlignedBox2 box = _ms->_collisions.get(entity)->shapes()[0].transformed(entity.worldTransform().matrix()).asAlignedBox();
+			_ms->_collisions.hitTest(hits, box, HIT_KITTEN, entity);
+			unsigned users = 0;
+			for (EntityRef e: hits) {
+				KittenComponent* k = _ms->_kittens.get(e);
+				switch (toy.type) {
+					case TOY_FEED:
+						if (k->s == EATING)
+							users++;
+						if (users > 2)
+							toy.state = toy.BUSY;
+						break;
+					case TOY_PLAY:
+						if (k->s == PLAYING)
+							users++;
+						if (users > 1)
+							toy.state = toy.BUSY;
+						break;
+					case TOY_PISS:
+						if (k->s == PEEING)
+							users++;
+						if (users > 0)
+							toy.state = toy.BUSY;
+						break;
+					case TOY_SLEEP:
+						if (k->s == SLEEPING)
+							users++;
+						if (users > 1)
+							toy.state = toy.BUSY;
+						break;
+					default:
+						break;
+				}
+			}
+		}
 	}
 }
