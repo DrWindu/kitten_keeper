@@ -604,7 +604,7 @@ EntityRef MainState::spawnKitten(const Vector2& pos) {
 void MainState::startGame() {
 	loadLevel(_levelPath);
 
-	spawnKitten(Vector2(120, 120));
+	spawnKitten(Vector2(120, 160));
 
 	setHappiness(1);
 	setMoney(100);
@@ -658,16 +658,8 @@ void MainState::updateTick() {
 void MainState::updateFrame() {
 	// Update camera
 
-	Vector3 h(960, 540, .5);
-	Vector2 min = h.head<2>();
-	Vector2 max(_level->tileMap()->width(0)  * TILE_SIZE - h(0),
-	            _level->tileMap()->height(0) * TILE_SIZE - h(1));
-	Vector3 c;
-	// TODO: Camera movement and stuff
-	c << 0, 0, .5;
-	c(0) = clamp(c(0), min(0), max(0));
-	c(1) = clamp(c(1), min(1), max(1));
-	Box3 viewBox(c - h, c + h);
+	Vector3 pos(0, -42, 0);
+	Box3 viewBox(pos, pos + Vector3(1920, 1080, 1));
 	_camera.setViewBox(viewBox);
 
 	// Rendering
@@ -713,7 +705,7 @@ void MainState::updateFrame() {
 
 void MainState::resizeEvent() {
 	// TODO: resize GUI.
-	Box3 viewBox(Vector3::Zero(),
+	Box3 viewBox(Vector3(0, 0, 0),
 	             Vector3(window()->width(),
 	                     window()->height(), 1));
 	_camera.setViewBox(viewBox);
