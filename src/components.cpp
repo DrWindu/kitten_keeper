@@ -266,15 +266,15 @@ void KittenComponentManager::update() {
 
 		// Bubble setting.
 		setBubble(entity, BUBBLE_NONE);
-		if (kitten.bored  > KIT_LOW) { setBubble(entity, BUBBLE_TOY  ); }
-		if (kitten.tired  > KIT_LOW) { setBubble(entity, BUBBLE_SLEEP); }
-		if (kitten.hungry > KIT_LOW) { setBubble(entity, BUBBLE_FOOD ); }
-		if (kitten.needy  > KIT_LOW) { setBubble(entity, BUBBLE_PEE  ); }
-		if (kitten.bored  > KIT_BAD) { setBubble(entity, BUBBLE_TOY  , .5); }
-		if (kitten.tired  > KIT_BAD) { setBubble(entity, BUBBLE_SLEEP, .5); }
-		if (kitten.hungry > KIT_BAD) { setBubble(entity, BUBBLE_FOOD , .5); }
-		if (kitten.needy  > KIT_BAD) { setBubble(entity, BUBBLE_PEE  , .5); }
-		if (kitten.sick   > KIT_LOW) { setBubble(entity, BUBBLE_PILL , 1); }
+		if (kitten.bored  > KIT_LOW) { setBubble(entity, BUBBLE_TOY  , kitten.bored  / 100); }
+		if (kitten.tired  > KIT_LOW) { setBubble(entity, BUBBLE_SLEEP, kitten.tired  / 100); }
+		if (kitten.hungry > KIT_LOW) { setBubble(entity, BUBBLE_FOOD , kitten.hungry / 100); }
+		if (kitten.needy  > KIT_LOW) { setBubble(entity, BUBBLE_PEE  , kitten.needy  / 100); }
+		if (kitten.bored  > KIT_BAD) { setBubble(entity, BUBBLE_TOY  , kitten.bored  / 100); }
+		if (kitten.tired  > KIT_BAD) { setBubble(entity, BUBBLE_SLEEP, kitten.tired  / 100); }
+		if (kitten.hungry > KIT_BAD) { setBubble(entity, BUBBLE_FOOD , kitten.hungry / 100); }
+		if (kitten.needy  > KIT_BAD) { setBubble(entity, BUBBLE_PEE  , kitten.needy  / 100); }
+		if (kitten.sick   > KIT_LOW) { setBubble(entity, BUBBLE_PILL , kitten.sick   / 100); }
 
 		// Current activity.
 		kitten.t -= TICK_LENGTH_IN_SEC;
