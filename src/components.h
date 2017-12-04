@@ -58,7 +58,8 @@ typedef enum {
 	SLEEPING,
 	PLAYING,
 	EATING,
-	PEEING
+	PEEING,
+	DECOMPOSING
 } status;
 
 enum BubbleType {

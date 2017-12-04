@@ -167,6 +167,18 @@ void KittenComponentManager::update() {
 		kitten.hungry += KIT_HPT;
 		kitten.needy  += KIT_NPT;
 
+		// Bubble setting.
+		setBubble(entity, BUBBLE_NONE);
+		if (kitten.bored  > KIT_LOW) { setBubble(entity, BUBBLE_TOY  ); }
+		if (kitten.tired  > KIT_LOW) { setBubble(entity, BUBBLE_SLEEP); }
+		if (kitten.hungry > KIT_LOW) { setBubble(entity, BUBBLE_FOOD ); }
+		if (kitten.needy  > KIT_LOW) { setBubble(entity, BUBBLE_SLEEP); }
+		if (kitten.bored  > KIT_BAD) { setBubble(entity, BUBBLE_TOY  ); }
+		if (kitten.tired  > KIT_BAD) { setBubble(entity, BUBBLE_SLEEP); }
+		if (kitten.hungry > KIT_BAD) { setBubble(entity, BUBBLE_FOOD ); }
+		if (kitten.needy  > KIT_BAD) { setBubble(entity, BUBBLE_SLEEP); }
+		if (kitten.sick   > KIT_LOW) { setBubble(entity, BUBBLE_PILL ); }
+
 		// Current activity.
 		kitten.t -= TICK_LENGTH_IN_SEC;
 		Vector2 npos = entity.position2();
@@ -225,8 +237,9 @@ void KittenComponentManager::update() {
 
 		// Shit happens to kitty.
 		if (kitten.sick > KIT_MAX) { // 1
-			dbgLogger.warning("Kit iz ded.");
+			kitten.s = DECOMPOSING;
 			kitten.setEnabled(false);
+			dbgLogger.warning("Kit iz ded.");
 			continue;
 		} else if (kitten.needy > KIT_MAX) { // 2
 			kitten.s = PEEING;
