@@ -377,6 +377,7 @@ void KittenComponentManager::update() {
 		if (kitten.sick > KIT_MAX) { // 1
 			kitten.s = DECOMPOSING;
 			_ms->setSpawnDeath(_ms->_spawnCount, _ms->_deathCount + 1);
+			_ms->playSound("kittendeath.wav");
 			setAnim(kitten, ANIM_DEAD);
 			setBubble(entity, BUBBLE_NONE);
 			kitten.setEnabled(false);

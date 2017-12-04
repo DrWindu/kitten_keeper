@@ -176,7 +176,10 @@ void MainState::initialize() {
 
 	_scene       = _entities.findByName("scene");
 
-//	loadSound("arrival.wav");
+	loadSound("kittendeath.wav");
+	loadSound("kittenmeow1.wav");
+	loadSound("kittenmeow2.wav");
+	loadSound("kittenmeow3.wav");
 
 //	loadMusic("ending.mp3");
 
