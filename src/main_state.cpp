@@ -684,13 +684,16 @@ void MainState::updateTick() {
 		_kittens.update();
 		_toys.update();
 
-		_kittenProgress += (0.25 + 0.75 * _happiness) / KITTEN_TIME * TICK_LENGTH_IN_SEC;
+		int nKittens = _spawnCount - _deathCount;
+
+		_kittenProgress += (0.25 + 0.75 * _happiness) * (1 + nKittens / 10.)
+		                   / KITTEN_TIME * TICK_LENGTH_IN_SEC;
 		if(_kittenProgress >= 1) {
 			spawnKitten();
 			_kittenProgress -= 1;
 		}
 
-		_payProgress += .2 * (_spawnCount - _deathCount) * _happiness * TICK_LENGTH_IN_SEC;
+		_payProgress += .2 * nKittens * _happiness * TICK_LENGTH_IN_SEC;
 		if(_payProgress >= 1) {
 			setMoney(_money + 1);
 			_payProgress -= 1;
