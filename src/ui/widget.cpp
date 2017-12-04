@@ -191,8 +191,10 @@ bool Widget::isInside(const lair::Vector2& position) const {
 Widget* Widget::widgetAt(const Vector2& position) {
 	Widget* found = nullptr;
 	for(Widget* child: _children) {
-		Widget* f = child->widgetAt(position);
-		if(f) found = f;
+		if(child->enabled()) {
+			Widget* f = child->widgetAt(position);
+			if(f) found = f;
+		}
 	}
 
 	if(!found && isInside(position)) {

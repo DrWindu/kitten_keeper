@@ -182,7 +182,7 @@ void MainState::initialize() {
 	_litterButton = createToyButton(_litterModel, "litter", "litiere.png",
 	                                "Litter\n\nBecause kittens need to ***.");
 	_pillButton   = createToyButton(_pillModel, "pill", "medoc.png",
-	                                "Medecin\n\nHeal sick kittens. Also, DRUUUUUUUUUUG !");
+	                                "Medecine\n\nHeal sick kittens. Also, DRUUUUUUUUUUG !");
 	_basketButton = createToyButton(_basketModel, "basket", "paniere.png",
 	                                "Basket\n\nIf I fit, I sleep.");
 

@@ -78,8 +78,10 @@ Widget* Gui::widgetAt(const Vector2& position) const {
 
 	// Keep the last one, i.e. the topmost.
 	for(Widget* widget: _widgets) {
-		Widget* f = widget->widgetAt(position);
-		if(f) found = f;
+		if(widget->enabled()) {
+			Widget* f = widget->widgetAt(position);
+			if(f) found = f;
+		}
 	}
 
 	return found;
