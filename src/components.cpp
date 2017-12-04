@@ -76,7 +76,7 @@ KittenComponent::KittenComponent(Manager* manager, _Entity* entity) :
 	bored(2),
 	hungry(2),
 	needy(2),
-	s(WANDERING),
+	s(SITTING),
 	t(0),
 	dst(0,0)
 {
@@ -126,7 +126,7 @@ void KittenComponentManager::setBubble(EntityRef kitten, BubbleType bubbleType) 
 
 void KittenComponentManager::seek(KittenComponent& k, ToyType tt, bool now)
 {
-	if (tt != TOY_HEAL && !now && k.s != WANDERING)
+	if (tt != TOY_HEAL && !now && k.s != SITTING)
 		return;
 
 	float range = now ? 100 : 800 ;
@@ -186,10 +186,9 @@ void KittenComponentManager::update() {
 		kitten.t -= TICK_LENGTH_IN_SEC;
 		Vector2 npos = entity.position2();
 		switch (kitten.s) {
-			case WANDERING:
-				do { npos = entity.position2() + Vector2(rand()%5-2, rand()%5-2); }
-				while (_ms->_level->inSolid(npos));
-				if (rand()%(60*TICKS_PER_SEC) == 0) {
+			case SITTING:
+				if (rand()%(8*TICKS_PER_SEC) == 0) {
+					kitten.bored += KIT_BPT;
 					kitten.s = WALKING;
 					kitten.dst = Vector2(rand()%1920, rand()%1080);
 				}
@@ -210,7 +209,7 @@ void KittenComponentManager::update() {
 					kitten.needy = std::min(kitten.needy, KIT_BAD);
 				}
 				else
-					kitten.s = WANDERING;
+					kitten.s = SITTING;
 				break;
 			case PLAYING:
 				if (kitten.bored > 0) {
@@ -218,7 +217,7 @@ void KittenComponentManager::update() {
 					kitten.tired += KIT_FPT;
 				}
 				else
-					kitten.s = WANDERING;
+					kitten.s = SITTING;
 				break;
 			case EATING:
 				if (kitten.hungry > 0) {
@@ -227,13 +226,13 @@ void KittenComponentManager::update() {
 					kitten.needy += KIT_NPT;
 				}
 				else
-					kitten.s = WANDERING;
+					kitten.s = SITTING;
 				break;
 			case PEEING:
 				if (kitten.needy > 0)
 					kitten.needy -= KIT_PISS;
 				else
-					kitten.s = WANDERING;
+					kitten.s = SITTING;
 				break;
 		};
 		entity.moveTo(npos);

@@ -53,7 +53,7 @@ enum DirFlags {
 };
 
 typedef enum {
-	WANDERING,
+	SITTING,
 	WALKING,
 	SLEEPING,
 	PLAYING,
