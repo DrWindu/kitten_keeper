@@ -21,9 +21,10 @@ __models__ = {
 			}
 			kitten = {
 				sick = 0
-				tired = 42
-				bored = 42
-				hungry = 42
+				tired = 2
+				bored = 3
+				hungry = 4
+				needy = 5
 				status = 0
 			}
 		}

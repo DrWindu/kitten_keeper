@@ -52,6 +52,15 @@ enum DirFlags {
 	DIR_RIGHT = 1 << RIGHT,
 };
 
+enum ToyType {
+	TOY_FEED,
+	TOY_PLAY,
+	TOY_PISS,
+	TOY_HEAL,
+	TOY_SLEEP,
+};
+const lair::EnumInfo* toyTypeInfo();
+
 class TriggerComponent : public Component {
 public:
 	typedef TriggerComponentManager Manager;
@@ -97,6 +106,8 @@ public:
 
 	static const PropertyList& properties();
 
+	void seek(ToyType t, bool now);
+
 public:
 	typedef float stat;
 	typedef enum {
@@ -104,13 +115,15 @@ public:
 		WALKING,
 		SLEEPING,
 		PLAYING,
-		EATING
+		EATING,
+		PEEING
 	} status;
 
 	stat sick;
 	stat tired;
 	stat bored;
 	stat hungry;
+	stat needy;
 
 	unsigned s; // Not "status s;" because fuck it, that's why.
 	double t;
@@ -127,16 +140,6 @@ public:
 public:
 	MainState* _ms;
 };
-
-
-enum ToyType {
-	TOY_EAT,
-	TOY_PLAY,
-	TOY_PISS,
-	TOY_HEAL,
-	TOY_SLEEP,
-};
-const lair::EnumInfo* toyTypeInfo();
 
 class ToyComponent : public Component {
 public:
