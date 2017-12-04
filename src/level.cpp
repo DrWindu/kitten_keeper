@@ -157,7 +157,10 @@ void Level::stop() {
 TileMap::TileIndex Level::getTile (const Vector2& pos) const {
 	Vector2i tilexy = cellCoord(pos, _tileMap->height(0));
 	
-	return _tileMap->tile(tilexy[0], tilexy[1], 0);
+	if(tilexy(0) >= 0 && unsigned(tilexy(0)) < _tileMap->width(0)
+	&& tilexy(1) >= 0 && unsigned(tilexy(1)) < _tileMap->height(0))
+		return _tileMap->tile(tilexy[0], tilexy[1], 0);
+	return 0;
 }
 
 
