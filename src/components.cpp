@@ -228,6 +228,7 @@ void KittenComponentManager::update() {
 		// Current activity.
 		kitten.t -= TICK_LENGTH_IN_SEC;
 		Vector2 npos = entity.position2();
+		Eigen::Rotation2D<float> rot(M_PI / 8.);
 		switch (kitten.s) {
 			case SITTING:
 				if (rand()%(8*TICKS_PER_SEC) == 0) {
@@ -236,13 +237,32 @@ void KittenComponentManager::update() {
 					kitten.dst = Vector2(rand()%1920, rand()%1080);
 				}
 				break;
-			case WALKING:
-				npos = lerp(KIT_WALK, entity.position2(), kitten.dst);
-				if (_ms->_level->inSolid(npos)) {
-					Vector2 delta = npos-entity.position2();
-					npos = entity.position2() + Vector2(delta[1], -delta[0]);
+		    case WALKING: {
+			    Vector2 v = kitten.dst - entity.position2();
+				float dist = v.norm();
+				float walkDist = 100.0f * TICK_LENGTH_IN_SEC;
+				if(dist >= walkDist) v = (v / dist) * walkDist;
+
+				npos = entity.position2() + v;
+				AlignedBox2 box(npos - Vector2(16, 32), npos + Vector2(16, 0));
+				int tryCount = 0;
+				while(_ms->_level->hitTest(box)) {
+					// Rotate v
+					v = rot * v;
+
+					npos = entity.position2() + v;
+					box = AlignedBox2(npos - Vector2(16, 32), npos + Vector2(16, 0));
+
+					if(tryCount >= 8) {
+						// Stuck, should change target.
+						npos = entity.position2();
+						break;
+					}
+					++tryCount;
 				}
+
 				break;
+		    }
 			case SLEEPING:
 				if (kitten.tired > 0) {
 					kitten.tired -= KIT_REST;

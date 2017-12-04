@@ -606,7 +606,7 @@ EntityRef MainState::spawnKitten(const Vector2& pos) {
 void MainState::startGame() {
 	loadLevel(_levelPath);
 
-	spawnKitten(Vector2(120, 160));
+	spawnKitten(Vector2(120, 180));
 
 	setHappiness(1);
 	setMoney(100);
