@@ -52,6 +52,15 @@ enum DirFlags {
 	DIR_RIGHT = 1 << RIGHT,
 };
 
+typedef enum {
+	WANDERING,
+	WALKING,
+	SLEEPING,
+	PLAYING,
+	EATING,
+	PEEING
+} status;
+
 enum ToyType {
 	TOY_FEED,
 	TOY_PLAY,
@@ -106,19 +115,8 @@ public:
 
 	static const PropertyList& properties();
 
-	void seek(ToyType t, bool now);
-
 public:
 	typedef float stat;
-	typedef enum {
-		WANDERING,
-		WALKING,
-		SLEEPING,
-		PLAYING,
-		EATING,
-		PEEING
-	} status;
-
 	stat sick;
 	stat tired;
 	stat bored;
@@ -135,6 +133,8 @@ public:
 	KittenComponentManager(MainState* ms);
 	virtual ~KittenComponentManager() = default;
 
+
+	void seek(KittenComponent& k, ToyType tt, bool now);
 	void update();
 
 public:
