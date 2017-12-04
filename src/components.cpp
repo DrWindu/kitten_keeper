@@ -209,6 +209,10 @@ void KittenComponentManager::update() {
 	// Some garbage collection...
 	compactArray();
 
+	int nDir = 8;
+	Eigen::Rotation2D<float> rotL( M_PI / double(nDir));
+	Eigen::Rotation2D<float> rotR(-M_PI / double(nDir));
+
 	for(unsigned k = 0 ; k < nComponents() ; ++k) {
 		KittenComponent& kitten = _components[k];
 		EntityRef entity = kitten.entity();
@@ -268,12 +272,12 @@ void KittenComponentManager::update() {
 		// Current activity.
 		kitten.t -= TICK_LENGTH_IN_SEC;
 		Vector2 npos = entity.position2();
-		Eigen::Rotation2D<float> rot(M_PI / 8.);
 		switch (kitten.s) {
 			case SITTING:
 				if (rand()%(8*TICKS_PER_SEC) == 0) {
 					kitten.bored += KIT_BPT;
 					kitten.s = WALKING;
+					kitten.bypass = BYPASS_NONE;
 					kitten.dst = findRandomDest(entity.position2(), 400);
 				}
 				break;
@@ -283,23 +287,40 @@ void KittenComponentManager::update() {
 				float walkDist = 100.0f * TICK_LENGTH_IN_SEC;
 				if(dist >= walkDist) v = (v / dist) * walkDist;
 
+				Vector2 vl = v;
+				Vector2 vr = v;
 				npos = entity.position2() + v;
 				AlignedBox2 box(npos - Vector2(16, 32), npos + Vector2(16, 0));
 				int tryCount = 0;
+				int nTries = (kitten.bypass == BYPASS_NONE)? (nDir - 1) * 2: nDir - 1;
+				BypassDir nextBypass = BYPASS_NONE;
 				while(_ms->_level->hitTest(box)) {
 					// Rotate v
-					v = rot * v;
+					if(kitten.bypass == BYPASS_LEFT ||
+					        (kitten.bypass == BYPASS_NONE && (tryCount & 1))) {
+						vl = rotL * vl;
+						v = vl;
+						nextBypass = BYPASS_LEFT;
+					}
+					if(kitten.bypass == BYPASS_RIGHT ||
+					        (kitten.bypass == BYPASS_NONE && !(tryCount & 1))) {
+						vr = rotR * vr;
+						v = vr;
+						nextBypass = BYPASS_RIGHT;
+					}
 
 					npos = entity.position2() + v;
 					box = AlignedBox2(npos - Vector2(16, 32), npos + Vector2(16, 0));
 
-					if(tryCount >= 8) {
+					if(tryCount > nTries) {
 						// Stuck, should change target.
 						npos = entity.position2();
 						break;
 					}
 					++tryCount;
 				}
+
+				kitten.bypass = nextBypass;
 
 				if(npos == entity.position2()) {
 					setAnim(kitten, ANIM_IDLE);
