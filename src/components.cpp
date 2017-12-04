@@ -184,6 +184,19 @@ void KittenComponentManager::seek(KittenComponent& k, ToyType tt, bool now)
 	}
 }
 
+Vector2 KittenComponentManager::findRandomDest(const Vector2& p, float radius) {
+	int tryCount = 0;
+	AlignedBox2 box;
+	Vector2 dest;
+	do {
+		dest = p + Vector2::Random() * radius;
+		box = AlignedBox2(dest - Vector2(16, 32), dest + Vector2(16, 0));
+		++tryCount;
+	} while(tryCount < 10 && _ms->_level->hitTest(box));
+
+	return (tryCount < 10)? dest: p;
+}
+
 /* stat: LOW, BAD, MAX (priority)
  * SICK:   (6)seek/use, (6)seek/use, (1)die
  * NEEDY:  (B)use,      (7)seek/use, (2)make a mess
@@ -261,7 +274,7 @@ void KittenComponentManager::update() {
 				if (rand()%(8*TICKS_PER_SEC) == 0) {
 					kitten.bored += KIT_BPT;
 					kitten.s = WALKING;
-					kitten.dst = Vector2(rand()%1920, rand()%1080);
+					kitten.dst = findRandomDest(entity.position2(), 400);
 				}
 				break;
 		    case WALKING: {
@@ -286,6 +299,11 @@ void KittenComponentManager::update() {
 						break;
 					}
 					++tryCount;
+				}
+
+				if(npos == entity.position2()) {
+					setAnim(kitten, ANIM_IDLE);
+					kitten.s = SITTING;
 				}
 
 				break;
@@ -332,6 +350,7 @@ void KittenComponentManager::update() {
 			kitten.s = DECOMPOSING;
 			_ms->setSpawnDeath(_ms->_spawnCount, _ms->_deathCount + 1);
 			setAnim(kitten, ANIM_DEAD);
+			setBubble(kitten, BUBBLE_NONE);
 			kitten.setEnabled(false);
 			dbgLogger.warning("Kit iz ded.");
 			continue;

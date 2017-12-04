@@ -163,6 +163,7 @@ public:
 	void setAnim(KittenComponent& kitten, KittenAnim anim);
 	void updateAnim(KittenComponent& kitten);
 	void seek(KittenComponent& k, ToyType tt, bool now);
+	Vector2 findRandomDest(const Vector2& p, float radius);
 	void update();
 
 public:
