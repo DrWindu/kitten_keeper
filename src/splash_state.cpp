@@ -154,6 +154,11 @@ void SplashState::addSplash(const Path& splashImage) {
 }
 
 
+void SplashState::clearSplash() {
+	_splashQueue.clear();
+}
+
+
 bool SplashState::nextSplash() {
 	if(_splashQueue.empty())
 		return false;

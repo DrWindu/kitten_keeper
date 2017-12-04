@@ -29,6 +29,7 @@
 #include "level.h"
 #include "game_view.h"
 #include "toy_button.h"
+#include "splash_state.h"
 
 #include "main_state.h"
 
@@ -578,6 +579,20 @@ void MainState::closeDialog() {
 void MainState::setHappiness(float happiness) {
 	_happiness = happiness;
 	_happinessLabel->setText(cat("Happiness: ", std::round(_happiness * 100), "%"));
+
+	if(_happiness < 0) {
+		showDialog("Ho nooo ! Things got so messy we have to close down...\n\nDon't worry, you can try again.", "NOOOoooooo...");
+		_dialogButton->onMouseUp = [this](Widget*, MouseEvent& e) {
+			game()->splashState()->setNextState(nullptr);
+			game()->splashState()->clearSplash();
+			game()->splashState()->addSplash("EndScreen.png");
+
+			game()->setNextState(game()->splashState());
+			quit();
+
+			e.accept();
+		};
+	}
 }
 
 
@@ -602,7 +617,7 @@ void MainState::setSpawnDeath(int spawn, int death) {
 EntityRef MainState::spawnKitten(const Vector2& pos) {
 	EntityRef kitten = _entities.cloneEntity(_kittenModel, _kittenLayer, "kitten");
 	setSpawnDeath(_spawnCount + 1, _deathCount);
-	setMoney(_money + 50);
+	setMoney(_money + 50 * _happiness);
 
 	if(pos(0) >= 0) {
 		kitten.placeAt(pos);
@@ -661,6 +676,8 @@ void MainState::updateTick() {
 		setMoney(_money + 5);
 	if(_rightInput->justPressed())
 		spawnKitten();
+	if(_downInput->justPressed())
+		setHappiness(_happiness - 0.1);
 #endif
 
 	if(_state == STATE_PLAY) {
@@ -673,11 +690,16 @@ void MainState::updateTick() {
 			_kittenProgress -= 1;
 		}
 
-		_payProgress += .2 * TICK_LENGTH_IN_SEC;
+		_payProgress += .2 * (_spawnCount - _deathCount) * _happiness * TICK_LENGTH_IN_SEC;
 		if(_payProgress >= 1) {
-			setMoney(_money + _spawnCount - _deathCount);
+			setMoney(_money + 1);
 			_payProgress -= 1;
 		}
+
+		_happiness += TICK_LENGTH_IN_SEC / 300.0f;
+		if(_happiness > 1)
+			_happiness = 1;
+		setHappiness(_happiness);
 
 		_entities.updateWorldTransforms();
 		_collisions.findCollisions();
@@ -687,8 +709,8 @@ void MainState::updateTick() {
 	}
 	else if(_state == STATE_PAUSE) {
 		if(_okInput->isPressed()) {
-			closeDialog();
-//			playSound("arrival.wav");
+			MouseEvent event(MouseEvent::MOUSE_UP, Vector2(), MOUSE_LEFT);
+			_dialogButton->onMouseUp(_dialogButton, event);
 		}
 	}
 

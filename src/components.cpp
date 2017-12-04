@@ -338,22 +338,26 @@ void KittenComponentManager::update() {
 		} else if (kitten.needy > KIT_MAX) { // 2
 			kitten.s = PEEING;
 			kitten.t = 2;
+			_ms->setHappiness(_ms->_happiness - 0.1);
 			dbgLogger.warning("Oop kitty made a mess.");
 			continue;
 		} else if (kitten.hungry > KIT_MAX) { // 3
 			kitten.hungry = KIT_LOW;
 			kitten.sick = KIT_LOW;
+			_ms->setHappiness(_ms->_happiness - 0.08);
 			dbgLogger.warning("Got sick from lack of food.");
 			continue;
 		} else if (kitten.tired > KIT_MAX) { // 4
 			kitten.s = SLEEPING;
 			kitten.t = 5;
+			_ms->setHappiness(_ms->_happiness - 0.05);
 			dbgLogger.warning("I sleep now.");
 			continue;
 		} else if (kitten.bored > KIT_MAX) { // 5
 			kitten.s = SLEEPING;
 			kitten.t = 2;
 			kitten.bored = KIT_LOW;
+			_ms->setHappiness(_ms->_happiness - 0.05);
 			dbgLogger.warning("Sooooo boooooooZZZZzzz...");
 			continue;
 		}

@@ -62,6 +62,7 @@ public:
 
 	void setNextState(GameState* nextState);
 	void addSplash(const Path& splashImage);
+	void clearSplash();
 	bool nextSplash();
 //	void setup(GameState* nextState, const Path& splashImage, float skipTime = 1.e20);
 	void updateTick();

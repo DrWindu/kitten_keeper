@@ -77,10 +77,8 @@ void Game::initialize() {
 	_mainState.reset(new MainState(this));
 
 	_splashState->initialize();
-//	_splashState->setup(_mainState.get(), "lair.png", 3);
 	_splashState->setNextState(_mainState.get());
-	_splashState->addSplash("title.png");
-//	_splashState->addSplash("story_begin.png");
+	_splashState->addSplash("TitleScreen.png");
 
 	_mainState->initialize();
 	_mainState->setLevel(_levelPath);
