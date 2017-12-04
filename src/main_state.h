@@ -80,8 +80,6 @@ typedef std::deque<CommandExpr> CommandList;
 
 enum State {
 	STATE_PLAY,
-	STATE_FADE_IN,
-	STATE_FADE_OUT,
 	STATE_PAUSE,
 };
 
@@ -105,8 +103,6 @@ public:
 	int execSingle(const std::string& cmd, EntityRef self = EntityRef());
 	int exec(int argc, const char** argv, EntityRef self = EntityRef());
 
-	void setState(State state, State nextState = STATE_PLAY);
-
 	void setLevel(const Path& level);
 	LevelSP registerLevel(const Path& level);
 	void loadLevel(const Path& level);
@@ -123,6 +119,10 @@ public:
 	EntityRef createTrigger(EntityRef parent, const char* name, const AlignedBox2& box);
 
 	void updateTriggers(bool disableCmds = false);
+
+	void showDialog(const String& message, const String& buttonText = "Continue",
+	                State state = STATE_PAUSE);
+	void closeDialog();
 
 	void startGame();
 	void updateTick();
@@ -175,8 +175,6 @@ public:
 	Input*      _okInput;
 
 	State    _state;
-	State    _nextState;
-	float    _transitionTime;
 
 	LevelMap _levelMap;
 	LevelSP  _level;
@@ -190,6 +188,9 @@ public:
 	ToyButton*  _pillButton;
 	ToyButton*  _basketButton;
 	Vector2     _toyButtonPos;
+	Widget*     _dialog;
+	Label*      _dialogText;
+	Label*      _dialogButton;
 
 	EntityRef   _models;
 	EntityRef   _kittenModel;

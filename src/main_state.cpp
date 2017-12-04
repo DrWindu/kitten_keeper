@@ -86,7 +86,6 @@ MainState::MainState(Game* game)
       _okInput(nullptr),
 
       _state(STATE_PLAY),
-      _transitionTime(0),
 
       _gameView(nullptr),
       _menu(nullptr),
@@ -95,7 +94,10 @@ MainState::MainState(Game* game)
       _litterButton(nullptr),
       _pillButton(nullptr),
       _basketButton(nullptr),
-      _toyButtonPos(8, 8)
+      _toyButtonPos(8, 8),
+      _dialog(nullptr),
+      _dialogText(nullptr),
+      _dialogButton(nullptr)
 {
 	_entities.registerComponentManager(&_sprites);
 	_entities.registerComponentManager(&_collisions);
@@ -185,6 +187,23 @@ void MainState::initialize() {
 	                                "Medecine\n\nHeal sick kittens. Also, DRUUUUUUUUUUG !");
 	_basketButton = createToyButton(_basketModel, "basket", "paniere.png",
 	                                "Basket\n\nIf I fit, I sleep.");
+
+	_dialog = _gui.createWidget<Widget>();
+	_dialog->setEnabled(false);
+	_dialog->setFrameTexture("frame.png");
+	_dialog->setFrameColor(Vector4(0, 0, 0, .8));
+
+	_dialogText = _dialog->createChild<Label>();
+	_dialogText->setFont(font);
+	_dialogText->textInfo().setColor(Vector4(1, 1, 1, 1));
+
+	_dialogButton = _dialog->createChild<Label>();
+	_dialogButton->setFrameTexture("frame.png");
+	_dialogButton->setFrameColor(Vector4(.5, .6, .7, 1));
+	_dialogButton->setFont(font);
+	_dialogButton->textInfo().setColor(Vector4(1, 1, 1, 1));
+	_dialogButton->setMargin(32, 16);
+	_dialogButton->onMouseUp = std::bind(&MainState::closeDialog, this);
 
 	loader()->waitAll();
 
@@ -312,14 +331,6 @@ int MainState::exec(int argc, const char** argv, EntityRef self) {
 }
 
 
-void MainState::setState(State state, State nextState) {
-	log().info("Change state: ", state, " -> ", nextState);
-	_state = state;
-	_nextState = nextState;
-	_transitionTime = 0;
-}
-
-
 void MainState::quit() {
 	_running = false;
 }
@@ -393,8 +404,6 @@ void MainState::loadLevel(const Path& level) {
 	_kittenLayer.placeAt(Vector3(0, 0, 0.2));
 
 	_level->start();
-
-	setState(_nextState);
 }
 
 
@@ -499,15 +508,40 @@ void MainState::updateTriggers(bool /*disableCmds*/) {
 //	}
 }
 
+void MainState::showDialog(const String& message, const String& buttonText, State state) {
+	float width = 600;
+	float margin = 16;
+
+	_dialogButton->setText(buttonText);
+	_dialogButton->resizeToText();
+	_dialogButton->place(Vector2(width - _dialogButton->size()(0) - margin, margin));
+
+	_dialogText->setText(message);
+	_dialogText->resizeToText(width - 2 * margin);
+	_dialogText->place(Vector2(margin, _dialogButton->position()(1) + _dialogButton->size()(1) + margin));
+
+	_dialog->resize(Vector2(width, _dialogText->position()(1) + _dialogText->size()(1) + margin));
+	_dialog->place((Vector2(1920, 1080) - _dialog->size()) / 2);
+	_dialog->setEnabled(true);
+
+	_state = state;
+
+}
+
+void MainState::closeDialog() {
+	_dialog->setEnabled(false);
+
+	_state = STATE_PLAY;
+}
 
 void MainState::startGame() {
-	setState(STATE_PLAY, STATE_FADE_IN);
-
 	loadLevel(_levelPath);
 
 	// TODO[Doc]: Here is how to create a kitten:
 	EntityRef kitten = _entities.cloneEntity(_kittenModel, _kittenLayer, "kitten");
 	kitten.placeAt(Vector2(120, 120));
+
+	showDialog("Facilis ex assumenda quisquam dolor ipsam. Ut nostrum mollitia est eaque. Pariatur omnis alias quia necessitatibus voluptatibus iusto voluptates explicabo. Ut sed non quia possimus quo voluptas. Incidunt est eos in molestias qui. Itaque accusamus ea quis in molestiae.\n\nPorro aut adipisci vel natus. Sit est magni est est. Mollitia et suscipit debitis exercitationem soluta.\n\nDolores qui libero ad asperiores. Officiis ut sunt aut. Facilis perspiciatis voluptatem natus rerum distinctio excepturi aut.");
 
 	//audio()->playMusic(assets()->getAsset("music.ogg"));
 	//audio()->playSound(assets()->getAsset("sound.ogg"), 2);
@@ -526,10 +560,8 @@ void MainState::updateTick() {
 	}
 
 	if(_state == STATE_PLAY) {
-		// TODO[Doc]: Gameplay goes here. Probably something like:
 		_kittens.update();
-		// _toys.update();
-		// Note: take care of collisions !
+		_toys.update();
 
 		_entities.updateWorldTransforms();
 		_collisions.findCollisions();
@@ -537,15 +569,9 @@ void MainState::updateTick() {
 		// FIXME: Might be useless...
 		updateTriggers();
 	}
-	else if(_state == STATE_FADE_IN || _state == STATE_FADE_OUT) {
-		_transitionTime += TICK_LENGTH_IN_SEC;
-		if(_transitionTime > FADE_DURATION) {
-			setState(_nextState);
-		}
-	}
 	else if(_state == STATE_PAUSE) {
 		if(_okInput->isPressed()) {
-			setState(STATE_FADE_IN);
+			closeDialog();
 //			playSound("arrival.wav");
 		}
 	}

@@ -77,6 +77,9 @@ void GameView::beginGrab(EntityRef& entity, const Vector2& scenePos) {
 		endGrab();
 	}
 
+	if(_mainState->_state != STATE_PLAY)
+		return;
+
 	ToyComponent* toy = _mainState->_toys.get(entity);
 	if(!toy) {
 		dbgLogger.error("Try to drag an entity which is not a Toy.");
@@ -102,6 +105,11 @@ void GameView::beginGrab(EntityRef& entity, const Vector2& scenePos) {
 void GameView::moveGrabbed(const Vector2& scenePos) {
 	if(!_grabEntity.isValid()) {
 		dbgLogger.error("moveGrabbed: no grab entity");
+		return;
+	}
+
+	if(_mainState->_state != STATE_PLAY) {
+		cancelGrab();
 		return;
 	}
 
