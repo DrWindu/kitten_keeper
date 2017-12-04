@@ -28,6 +28,7 @@
 #include "game.h"
 #include "level.h"
 #include "game_view.h"
+#include "toy_button.h"
 
 #include "main_state.h"
 
@@ -88,7 +89,13 @@ MainState::MainState(Game* game)
       _transitionTime(0),
 
       _gameView(nullptr),
-      _testButton(nullptr)
+      _menu(nullptr),
+      _foodButton(nullptr),
+      _toyButton(nullptr),
+      _litterButton(nullptr),
+      _pillButton(nullptr),
+      _basketButton(nullptr),
+      _toyButtonPos(8, 8)
 {
 	_entities.registerComponentManager(&_sprites);
 	_entities.registerComponentManager(&_collisions);
@@ -138,7 +145,11 @@ void MainState::initialize() {
 	// TODO[Doc]: Here is how to fetch an entity defined in entities.ldl
 	_models       = _entities.findByName("__models__");
 	_kittenModel  = _entities.findByName("kitten_model");
-	_paniereModel = _entities.findByName("paniere_model");
+	_foodModel    = _entities.findByName("food_model");
+	_toyModel     = _entities.findByName("toy_model");
+	_litterModel  = _entities.findByName("litter_model");
+	_pillModel    = _entities.findByName("pill_model");
+	_basketModel  = _entities.findByName("basket_model");
 
 	_scene       = _entities.findByName("scene");
 
@@ -159,64 +170,21 @@ void MainState::initialize() {
 	_gameView->setMainState(this);
 	_gameView->setName("game_view");
 
-	_testButton = _gui.createWidget<Label>();
-	_testButton->setName("test_button");
-	_testButton->setFrameTexture("white.png");
-	_testButton->setFrameColor(Vector4(.7, .7, .7, 1));
-	_testButton->setMargin(16, 8);
-	_testButton->setFont(font);
-	_testButton->setText("Test button");
-	_testButton->textInfo().setColor(Vector4(0, 0, 0, 1));
-	_testButton->place(Vector2(16, 16));
-	_testButton->resizeToText();
+	_menu = _gui.createWidget<Widget>();
+	_menu->resize(Vector2(1920, 96));
+	_menu->setFrameTexture("white.png");
+	_menu->setFrameColor(Vector4(.8, .6, .3, 1));
 
-	_testButton->onMouseEnter = [](Widget* w, HoverEvent& e) {
-		w->setFrameColor(Vector4(.8, .8, .8, 1));
-		e.accept();
-	};
-	_testButton->onMouseLeave = [](Widget* w, HoverEvent& e) {
-		w->setFrameColor(Vector4(.7, .7, .7, 1));
-		e.accept();
-	};
-	_testButton->onMouseUp = [this](Widget*, MouseEvent& e) {
-		dbgLogger.warning("Click");
-		EntityRef toy = _entities.cloneEntity(_paniereModel, _toyLayer, "paniere");
-		_gameView->beginGrab(toy, _gameView->sceneFromScreen(e.position()));
-		e.accept();
-	};
-
-	// DRAK DEBUG STUFF
-//	Widget* test = _gui.createWidget<Widget>();
-//	test->setName("test");
-//	test->setEnabled(true);
-//	test->place(Vector2(256, 128));
-//	test->resize(Vector2(512, 512));
-//	test->setFrameTexture("frame.png");
-//	test->setFrameColor(Vector4(1, 0, 0, 1));
-
-//	auto test2 = test->createChild<Label>();
-//	test2->setName("test2");
-//	test2->setEnabled(true);
-//	test2->place(Vector2(128, 128));
-//	test2->resize(Vector2(256, 256));
-//	test2->setFrameTexture("white.png");
-//	test2->setFrameColor(Vector4(0, 0, 0, 1));
-//	test2->setFont("droid_sans_24.json");
-//	test2->setText("Laboriosam eveniet et rerum nemo voluptatum sint fuga. Reprehenderit occaecati voluptatem officia corrupti et itaque veniam. Iure odit velit ea aut impedit. Eveniet explicabo quis est labore vero autem veniam quidem. Et maxime fugit qui sit sint dicta. Repellat inventore ullam totam et minima maiores in.");
-//	test2->textInfo().setColor(Vector4(1, 1, 1, 1));
-
-//	test->onMouseEnter = [test2](HoverEvent& event) {
-//		dbgLogger.warning("Enter");
-//		test2->setEnabled(true);
-//		event.accept();
-//	};
-
-//	test->onMouseLeave = [test2](HoverEvent& event) {
-//		dbgLogger.warning("Leave");
-//		test2->setEnabled(false);
-//		event.accept();
-//	};
-	// END DEBUG STUFF
+	_foodButton   = createToyButton(_foodModel, "food", "gamelle.png",
+	                                "Food\n\nBecause kittens need to eat. Can I haz Cheezburger ?");
+	_toyButton    = createToyButton(_toyModel, "toy", "jouet.png",
+	                                "Toy\n\nYaaay ! Toy ! Everything is a Toy. I toy. You toy.");
+	_litterButton = createToyButton(_litterModel, "litter", "litiere.png",
+	                                "Litter\n\nBecause kittens need to ***.");
+	_pillButton   = createToyButton(_pillModel, "pill", "medoc.png",
+	                                "Medecin\n\nHeal sick kittens. Also, DRUUUUUUUUUUG !");
+	_basketButton = createToyButton(_basketModel, "basket", "paniere.png",
+	                                "Basket\n\nIf I fit, I sleep.");
 
 	loader()->waitAll();
 
@@ -455,6 +423,23 @@ void MainState::playMusic(const Path& sound) {
 }
 
 
+ToyButton* MainState::createToyButton(EntityRef model, const String& name,
+                                      const String& picture, const String& description) {
+	ToyButton* button = _gui.createWidget<ToyButton>();
+	button->place(_toyButtonPos);
+	button->setMainState(this);
+	button->setPicture(picture);
+	button->setModel(model);
+	button->setToyName(name);
+	button->setDescription(description);
+	button->layout();
+
+	_toyButtonPos(0) += 88;
+
+	return button;
+}
+
+
 EntityRef MainState::getEntity(const String& name, const EntityRef& ancestor) {
 	EntityRef entity = _entities.findByName(name, ancestor);
 	if(!entity.isValid()) {
@@ -633,6 +618,7 @@ void MainState::resizeEvent() {
 	_camera.setViewBox(viewBox);
 
 	_gui.setRealScreenSize(Vector2(window()->width(), window()->height()));
+	_gameView->resize(Vector2(window()->width(), window()->height()));
 }
 
 

@@ -69,8 +69,8 @@ void Label::setFont(const lair::Path& logicPath)
 	setFont(asset);
 }
 
-void Label::resizeToText() {
-	resize(_textInfo.textSize(_text) + _marginMin + _marginMax);
+void Label::resizeToText(int width) {
+	resize(_textInfo.textSize(_text, width) + _marginMin + _marginMax);
 }
 
 void Label::preRender(lair::SpriteRenderer* renderer) {

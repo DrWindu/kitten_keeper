@@ -52,8 +52,10 @@ class Game;
 class Level;
 class MainState;
 class Widget;
+class Picture;
 class Label;
 class GameView;
+class ToyButton;
 
 typedef std::shared_ptr<Level> LevelSP;
 typedef std::unordered_map<Path, LevelSP, boost::hash<Path>> LevelMap;
@@ -113,6 +115,9 @@ public:
 	void playSound(const Path& sound);
 	void loadMusic(const Path& sound);
 	void playMusic(const Path& music);
+
+	ToyButton* createToyButton(EntityRef model, const String& name, const String& picture,
+	                           const String& description);
 
 	EntityRef getEntity(const String& name, const EntityRef& ancestor = EntityRef());
 	EntityRef createTrigger(EntityRef parent, const char* name, const AlignedBox2& box);
@@ -177,12 +182,22 @@ public:
 	LevelSP  _level;
 	Path     _levelPath;
 
-	GameView* _gameView;
-	Label*    _testButton;
+	GameView*   _gameView;
+	Widget*     _menu;
+	ToyButton*  _foodButton;
+	ToyButton*  _toyButton;
+	ToyButton*  _litterButton;
+	ToyButton*  _pillButton;
+	ToyButton*  _basketButton;
+	Vector2     _toyButtonPos;
 
 	EntityRef   _models;
 	EntityRef   _kittenModel;
-	EntityRef   _paniereModel;
+	EntityRef   _foodModel;
+	EntityRef   _toyModel;
+	EntityRef   _litterModel;
+	EntityRef   _pillModel;
+	EntityRef   _basketModel;
 
 	EntityRef   _tileLayer;
 	EntityRef   _scene;

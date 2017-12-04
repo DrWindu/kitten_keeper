@@ -162,6 +162,7 @@ void GameView::cancelGrab() {
 		toy->state = toy->startState;
 		_grabEntity.placeAt(toy->startPos);
 		sprite->setColor(Vector4(1, 1, 1, 1));
+		_mainState->_collisions.update(_grabEntity);
 	}
 
 	releaseMouse();
@@ -169,10 +170,16 @@ void GameView::cancelGrab() {
 }
 
 void GameView::mousePressEvent(MouseEvent& event) {
-	if(!_grabEntity.isValid()) {
-		// TODO: picking.
+	if(!_grabEntity.isValid() && event.button() == MOUSE_LEFT) {
+		std::deque<EntityRef> hits;
+		Vector2 scenePos = sceneFromScreen(event.position());
+		_mainState->_collisions.hitTest(hits, scenePos, HIT_TOY);
+		for(EntityRef entity: hits) {
+			beginGrab(entity, scenePos);
+			event.accept();
+			return;
+		}
 	}
-
 	event.reject();
 }
 
@@ -189,6 +196,7 @@ void GameView::mouseReleaseEvent(MouseEvent& event) {
 			return;
 		}
 	}
+
 	event.reject();
 }
 

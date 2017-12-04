@@ -29,7 +29,7 @@ __models__ = {
 			}
 		}
 
-        gamelle_model = {
+        food_model = {
 		    sprite = {
 			    texture       = "gamelle.png"
 				anchor        = Vector(0, 0)
@@ -50,7 +50,7 @@ __models__ = {
 			}
 		}
 
-        jouet_model = {
+        toy_model = {
 		    sprite = {
 			    texture       = "jouet.png"
 				anchor        = Vector(0, 0)
@@ -71,7 +71,7 @@ __models__ = {
 			}
 		}
 
-        litiere_model = {
+        litter_model = {
 		    sprite = {
 			    texture       = "litiere.png"
 				anchor        = Vector(0, 0)
@@ -92,7 +92,7 @@ __models__ = {
 			}
 		}
 
-        medoc_model = {
+        pill_model = {
 		    sprite = {
 			    texture       = "medoc.png"
 				anchor        = Vector(0, 0)
@@ -113,7 +113,7 @@ __models__ = {
 			}
 		}
 
-        paniere_model = {
+        basket_model = {
 		    sprite = {
 			    texture       = "paniere.png"
 				anchor        = Vector(0, 0)

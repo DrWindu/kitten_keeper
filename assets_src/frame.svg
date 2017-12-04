@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="144"
-   height="144"
-   viewBox="0 0 38.099999 38.100001"
+   width="48"
+   height="48"
+   viewBox="0 0 12.7 12.7"
    version="1.1"
    id="svg4701"
    inkscape:version="0.92.1 r15371"
@@ -28,9 +28,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="7.9195959"
-     inkscape:cx="54.156315"
-     inkscape:cy="79.961236"
+     inkscape:zoom="31.678384"
+     inkscape:cx="22.839991"
+     inkscape:cy="26.216385"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -39,13 +39,14 @@
      inkscape:window-height="2047"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1">
+     inkscape:window-maximized="1"
+     inkscape:pagecheckerboard="true">
     <inkscape:grid
        type="xygrid"
        id="grid4703"
        spacingx="0.26458333"
        spacingy="0.26458333"
-       empspacing="12"
+       empspacing="16"
        enabled="true" />
   </sodipodi:namedview>
   <metadata
@@ -64,14 +65,14 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-258.89998)">
+     transform="translate(0,-284.29998)">
     <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:3.13090372;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect4705"
-       width="37.570831"
-       height="37.570858"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:3.17499995;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect5269"
+       width="12.170834"
+       height="12.170834"
        x="0.26458332"
-       y="259.16455"
-       ry="12.170846" />
+       y="284.56458"
+       ry="1.8520716" />
   </g>
 </svg>
