@@ -166,7 +166,7 @@ public:
 	virtual ~KittenComponentManager() = default;
 
 
-	void setBubble(EntityRef kitten, BubbleType bubbleType);
+	void setBubble(EntityRef kitten, BubbleType bubbleType, float intensity = 0);
 	void setAnim(KittenComponent& kitten, KittenAnim anim);
 	void updateAnim(KittenComponent& kitten);
 	void seek(KittenComponent& k, ToyType tt, bool now);

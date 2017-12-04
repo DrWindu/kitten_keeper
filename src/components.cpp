@@ -110,7 +110,7 @@ KittenComponentManager::KittenComponentManager(MainState* ms)
 }
 
 
-void KittenComponentManager::setBubble(EntityRef kitten, BubbleType bubbleType) {
+void KittenComponentManager::setBubble(EntityRef kitten, BubbleType bubbleType, float intensity) {
 	EntityRef bubble = kitten.firstChild();
 	if(!bubble.isValid()) {
 		dbgLogger.error("Kitten with no bubble ?");
@@ -122,8 +122,15 @@ void KittenComponentManager::setBubble(EntityRef kitten, BubbleType bubbleType) 
 		bubble.setEnabled(true);
 		if (bubbleType == BUBBLE_NONE)
 			bubble.setEnabled(false);
-		else
+		else {
+			Transform t = bubble.transform();
+			t(0, 0) = 1 + intensity;
+			t(1, 1) = 1 + intensity;
+			bubble.place(t);
+
 			sprite->setTileIndex(bubbleType);
+			sprite->setColor(lerp(intensity, Vector4(1, 1, 1, 1), Vector4(1, .5, .5, 1)));
+		}
 	}
 }
 
@@ -263,11 +270,11 @@ void KittenComponentManager::update() {
 		if (kitten.tired  > KIT_LOW) { setBubble(entity, BUBBLE_SLEEP); }
 		if (kitten.hungry > KIT_LOW) { setBubble(entity, BUBBLE_FOOD ); }
 		if (kitten.needy  > KIT_LOW) { setBubble(entity, BUBBLE_PEE  ); }
-		if (kitten.bored  > KIT_BAD) { setBubble(entity, BUBBLE_TOY  ); }
-		if (kitten.tired  > KIT_BAD) { setBubble(entity, BUBBLE_SLEEP); }
-		if (kitten.hungry > KIT_BAD) { setBubble(entity, BUBBLE_FOOD ); }
-		if (kitten.needy  > KIT_BAD) { setBubble(entity, BUBBLE_PEE  ); }
-		if (kitten.sick   > KIT_LOW) { setBubble(entity, BUBBLE_PILL ); }
+		if (kitten.bored  > KIT_BAD) { setBubble(entity, BUBBLE_TOY  , .5); }
+		if (kitten.tired  > KIT_BAD) { setBubble(entity, BUBBLE_SLEEP, .5); }
+		if (kitten.hungry > KIT_BAD) { setBubble(entity, BUBBLE_FOOD , .5); }
+		if (kitten.needy  > KIT_BAD) { setBubble(entity, BUBBLE_PEE  , .5); }
+		if (kitten.sick   > KIT_LOW) { setBubble(entity, BUBBLE_PILL , 1); }
 
 		// Current activity.
 		kitten.t -= TICK_LENGTH_IN_SEC;
