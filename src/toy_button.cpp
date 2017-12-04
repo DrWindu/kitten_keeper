@@ -99,10 +99,11 @@ void ToyButton::mouseReleaseEvent(MouseEvent& event) {
 
 	if(event.button() == MOUSE_LEFT && _mainState->_money >= cost
 	        && _mainState->_state == STATE_PLAY) {
-		EntityRef toy = _mainState->_entities.cloneEntity(
-		                    _model, _mainState->_toyLayer, _toyName.c_str());
-		Vector2 scenePos = _mainState->_gameView->sceneFromScreen(event.position());
-		_mainState->_gameView->beginGrab(toy, scenePos);
+		_mainState->_gameView->createToy(_model);
+//		EntityRef toy = _mainState->_entities.cloneEntity(
+//		                    _model, _mainState->_toyLayer, _toyName.c_str());
+//		Vector2 scenePos = _mainState->_gameView->sceneFromScreen(event.position());
+//		_mainState->_gameView->beginGrab(toy, scenePos);
 		event.accept();
 		return;
 	}

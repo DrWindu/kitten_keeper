@@ -51,6 +51,7 @@ public:
 	bool canPlaceToy(ToyComponent* toy, const lair::Vector2& scenePos);
 
 	lair::EntityRef grabEntity();
+	void createToy(lair::EntityRef& toy);
 	void beginGrab(lair::EntityRef& toy, const lair::Vector2& scenePos);
 	void moveGrabbed(const lair::Vector2& scenePos);
 	void endGrab();

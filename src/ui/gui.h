@@ -65,6 +65,7 @@ public:
 	void setRealScreenSize(const lair::Vector2& realSize);
 	lair::Vector2 screenFromReal(int rx, int ry) const;
 
+	lair::Vector2 lastMousePosition() const;
 	void setMouseGrabWidget(Widget* widget);
 
 	void dispatchEvent(Event& event);

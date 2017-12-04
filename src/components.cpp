@@ -409,7 +409,7 @@ void KittenComponentManager::update() {
 		unsigned options = 0x00;
 		for (EntityRef e: hits) { // Toys ?
 			ToyComponent* t = _ms->_toys.get(e);
-			if (t->state != t->PLACED) { continue; }
+			if (!t || t->state != t->PLACED) { continue; }
 			if      (t->type == TOY_FEED)  { options |= 0x01; }
 			else if (t->type == TOY_PLAY)  { options |= 0x02; }
 			else if (t->type == TOY_PISS)  { options |= 0x04; }

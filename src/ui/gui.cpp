@@ -105,6 +105,10 @@ Vector2 Gui::screenFromReal(int rx, int ry) const {
 	        .cwiseQuotient(_realScreenSize);
 }
 
+lair::Vector2 Gui::lastMousePosition() const {
+	return _lastMousePos;
+}
+
 void Gui::setMouseGrabWidget(Widget* widget) {
 	_mouseGrabWidget = widget;
 }

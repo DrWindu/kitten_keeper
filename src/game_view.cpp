@@ -71,10 +71,21 @@ EntityRef GameView::grabEntity() {
 	return _grabEntity;
 }
 
+void GameView::createToy(lair::EntityRef& toyModel) {
+	ToyComponent* toyComp = _mainState->_toys.get(toyModel);
+	if(_mainState->_state != STATE_PLAY || _mainState->_money < toyComp->cost)
+		return;
+
+	EntityRef toy = _mainState->_entities.cloneEntity(
+	                    toyModel, _mainState->_toyLayer);
+	Vector2 scenePos = sceneFromScreen(_gui->lastMousePosition());
+	_mainState->_gameView->beginGrab(toy, scenePos);
+}
+
 void GameView::beginGrab(EntityRef& entity, const Vector2& scenePos) {
 	if(_grabEntity.isValid()) {
 		dbgLogger.error("Start dragging before the end of the previous drag ?");
-		endGrab();
+		cancelGrab();
 	}
 
 	if(_mainState->_state != STATE_PLAY)

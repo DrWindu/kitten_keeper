@@ -180,6 +180,11 @@ public:
 	Input*      _downInput;
 	Input*      _upInput;
 	Input*      _okInput;
+	Input*      _foodInput;
+	Input*      _toyInput;
+	Input*      _litterInput;
+	Input*      _medecineInput;
+	Input*      _basketInput;
 
 	State    _state;
 	float    _happiness;

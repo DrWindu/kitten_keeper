@@ -86,6 +86,11 @@ MainState::MainState(Game* game)
       _downInput(nullptr),
       _upInput(nullptr),
       _okInput(nullptr),
+      _foodInput(nullptr),
+      _toyInput(nullptr),
+      _litterInput(nullptr),
+      _medecineInput(nullptr),
+      _basketInput(nullptr),
 
       _state(STATE_PLAY),
 
@@ -136,6 +141,11 @@ void MainState::initialize() {
 	_downInput  = _inputs.addInput("down");
 	_upInput    = _inputs.addInput("up");
 	_okInput    = _inputs.addInput("ok");
+	_foodInput     = _inputs.addInput("food");
+	_toyInput      = _inputs.addInput("toy");
+	_litterInput   = _inputs.addInput("litter");
+	_medecineInput = _inputs.addInput("medecine");
+	_basketInput   = _inputs.addInput("basket");
 
 	_inputs.mapScanCode(_quitInput,  SDL_SCANCODE_ESCAPE);
 	_inputs.mapScanCode(_leftInput,  SDL_SCANCODE_LEFT);
@@ -145,6 +155,12 @@ void MainState::initialize() {
 	_inputs.mapScanCode(_okInput,    SDL_SCANCODE_SPACE);
 	_inputs.mapScanCode(_okInput,    SDL_SCANCODE_RETURN);
 	_inputs.mapScanCode(_okInput,    SDL_SCANCODE_RETURN2);
+
+	_inputs.mapScanCode(_foodInput,     SDL_SCANCODE_Q);
+	_inputs.mapScanCode(_toyInput,      SDL_SCANCODE_W);
+	_inputs.mapScanCode(_litterInput,   SDL_SCANCODE_E);
+	_inputs.mapScanCode(_medecineInput, SDL_SCANCODE_R);
+	_inputs.mapScanCode(_basketInput,   SDL_SCANCODE_T);
 
 	// TODO: load stuff.
 	loadEntities("entities.ldl", _entities.root());
@@ -183,15 +199,15 @@ void MainState::initialize() {
 	_menu->setFrameTexture("white.png");
 	_menu->setFrameColor(Vector4(.8, .6, .3, 1));
 
-	_foodButton   = createToyButton(_foodModel, "Food", "gamelle.png",
+	_foodButton   = createToyButton(_foodModel, "Food (Q)", "gamelle.png",
 	                                "Because kittens need to eat. Can I haz Cheezburger ?");
-	_toyButton    = createToyButton(_toyModel, "Toy", "jouet.png",
+	_toyButton    = createToyButton(_toyModel, "Toy (W)", "jouet.png",
 	                                "Yaaay ! Toy ! Everything is a Toy. I toy. You toy.");
-	_litterButton = createToyButton(_litterModel, "Litter", "litiere.png",
+	_litterButton = createToyButton(_litterModel, "Litter (E)", "litiere.png",
 	                                "Because kittens need to ***.");
-	_pillButton   = createToyButton(_pillModel, "Medecine", "medoc.png",
+	_pillButton   = createToyButton(_pillModel, "Medecine (R)", "medoc.png",
 	                                "Heal sick kittens. Also, DRUUUUUUUUUUG !");
-	_basketButton = createToyButton(_basketModel, "Basket", "paniere.png",
+	_basketButton = createToyButton(_basketModel, "Basket (T)", "paniere.png",
 	                                "If I fit, I sleep.");
 
 	_happinessLabel = _menu->createChild<Label>();
@@ -681,6 +697,17 @@ void MainState::updateTick() {
 #endif
 
 	if(_state == STATE_PLAY) {
+//		if(_foodInput->justPressed())
+//			_gameView->createToy(_foodModel);
+//		if(_toyInput->justPressed())
+//			_gameView->createToy(_toyModel);
+//		if(_litterInput->justPressed())
+//			_gameView->createToy(_litterModel);
+//		if(_medecineInput->justPressed())
+//			_gameView->createToy(_pillModel);
+//		if(_basketInput->justPressed())
+//			_gameView->createToy(_basketModel);
+
 		_kittens.update();
 		_toys.update();
 
