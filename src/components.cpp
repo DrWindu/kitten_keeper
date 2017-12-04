@@ -172,7 +172,7 @@ void KittenComponentManager::seek(KittenComponent& k, ToyType tt, bool now)
 	if (tt != TOY_HEAL && !now && k.s != SITTING)
 		return;
 
-	float range = now ? 100 : 800 ;
+	float range = now ? 800 : 200 ;
 	for (ToyComponent& t: _ms->_toys)
 	{
 		float dist = (k.entity().position2() - t.entity().position2()).norm();
@@ -205,13 +205,40 @@ void KittenComponentManager::update() {
 
 		// Basal metabolism.
 		if (kitten.sick)
-			kitten.sick += kitten.sick * 0.01;
-		else if (rand()%(300*TICKS_PER_SEC) == 0)
+			kitten.sick += kitten.sick * 0.003;
+		else if (rand()%(180*TICKS_PER_SEC) == 0)
 			kitten.sick = KIT_LOW;
+
 		kitten.tired  += KIT_FPT;
 		kitten.bored  += KIT_BPT;
 		kitten.hungry += KIT_HPT;
 		kitten.needy  += KIT_NPT;
+
+		// Animation setting.
+		switch(kitten.s) {
+		case SITTING:
+		case EATING:
+		case PEEING:
+			setAnim(kitten, ANIM_IDLE);
+			break;
+		case WALKING: {
+			Vector2 v = kitten.dst - entity.position2();
+			int axis;
+			v.cwiseAbs().maxCoeff(&axis);
+			if(axis == 0 && v(axis) <  0) setAnim(kitten, ANIM_LEFT);
+			if(axis == 0 && v(axis) >= 0) setAnim(kitten, ANIM_RIGHT);
+			if(axis == 1 && v(axis) <  0) setAnim(kitten, ANIM_DOWN);
+			if(axis == 1 && v(axis) >= 0) setAnim(kitten, ANIM_UP);
+			break;
+		}
+		case SLEEPING:
+			setAnim(kitten, ANIM_SLEEP);
+			break;
+		case PLAYING:
+			setAnim(kitten, ANIM_PLAY);
+			break;
+		}
+		updateAnim(kitten);
 
 		// Bubble setting.
 		setBubble(entity, BUBBLE_NONE);
@@ -303,8 +330,9 @@ void KittenComponentManager::update() {
 		// Shit happens to kitty.
 		if (kitten.sick > KIT_MAX) { // 1
 			kitten.s = DECOMPOSING;
-			kitten.setEnabled(false);
 			_ms->setSpawnDeath(_ms->_spawnCount, _ms->_deathCount + 1);
+			setAnim(kitten, ANIM_DEAD);
+			kitten.setEnabled(false);
 			dbgLogger.warning("Kit iz ded.");
 			continue;
 		} else if (kitten.needy > KIT_MAX) { // 2
@@ -395,35 +423,6 @@ void KittenComponentManager::update() {
 				continue;
 			}
 		}
-
-		switch(kitten.s) {
-		case SITTING:
-		case EATING:
-		case PEEING:
-			setAnim(kitten, ANIM_IDLE);
-			break;
-		case WALKING: {
-			Vector2 v = kitten.dst - entity.position2();
-			int axis;
-			v.cwiseAbs().maxCoeff(&axis);
-			if(axis == 0 && v(axis) <  0) setAnim(kitten, ANIM_LEFT);
-			if(axis == 0 && v(axis) >= 0) setAnim(kitten, ANIM_RIGHT);
-			if(axis == 1 && v(axis) <  0) setAnim(kitten, ANIM_DOWN);
-			if(axis == 1 && v(axis) >= 0) setAnim(kitten, ANIM_UP);
-			break;
-		}
-		case SLEEPING:
-			setAnim(kitten, ANIM_SLEEP);
-			break;
-		case PLAYING:
-			setAnim(kitten, ANIM_PLAY);
-			break;
-		case DECOMPOSING:
-			setAnim(kitten, ANIM_DEAD);
-			break;
-		}
-
-		updateAnim(kitten);
 	}
 }
 
