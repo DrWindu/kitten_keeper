@@ -67,6 +67,7 @@ enum {
 
 extern const float TICK_LENGTH_IN_SEC;
 extern const float FADE_DURATION;
+extern const float KITTEN_TIME;
 
 typedef int (*Command)(MainState* state, EntityRef self, int argc, const char** argv);
 typedef std::unordered_map<std::string, Command> CommandMap;
@@ -126,6 +127,7 @@ public:
 
 	void setHappiness(float happiness);
 	void setMoney(int money);
+	void setSpawnDeath(int spawn, int death);
 
 	EntityRef spawnKitten(const Vector2& pos = Vector2(-1, -1));
 
@@ -182,6 +184,10 @@ public:
 	State    _state;
 	float    _happiness;
 	int      _money;
+	int      _spawnCount;
+	int      _deathCount;
+	float    _kittenProgress;
+	float    _payProgress;
 
 	LevelMap _levelMap;
 	LevelSP  _level;
@@ -196,6 +202,7 @@ public:
 	ToyButton*  _basketButton;
 	Label*      _happinessLabel;
 	Label*      _moneyLabel;
+	Label*      _catLabel;
 	Vector2     _toyButtonPos;
 	Widget*     _dialog;
 	Label*      _dialogText;

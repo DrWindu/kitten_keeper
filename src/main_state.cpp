@@ -38,6 +38,7 @@
 
 const float TICK_LENGTH_IN_SEC = 1.f / float(TICKS_PER_SEC);
 const float FADE_DURATION = .5;
+const float KITTEN_TIME = 20;
 
 void dumpEntityTree(Logger& log, EntityRef e, unsigned indent = 0) {
 	log.info(std::string(indent * 2u, ' '), e.name(), ": ", e.isEnabled(), ", ", e.position3().transpose());
@@ -96,6 +97,7 @@ MainState::MainState(Game* game)
       _basketButton(nullptr),
       _happinessLabel(nullptr),
       _moneyLabel(nullptr),
+      _catLabel(nullptr),
       _toyButtonPos(8, 8),
       _dialog(nullptr),
       _dialogText(nullptr),
@@ -175,6 +177,7 @@ void MainState::initialize() {
 	_gameView->setName("game_view");
 
 	_menu = _gui.createWidget<Widget>();
+	_menu->setName("menu");
 	_menu->resize(Vector2(1920, 96));
 	_menu->setFrameTexture("white.png");
 	_menu->setFrameColor(Vector4(.8, .6, .3, 1));
@@ -191,6 +194,7 @@ void MainState::initialize() {
 	                                "If I fit, I sleep.");
 
 	_happinessLabel = _menu->createChild<Label>();
+	_happinessLabel->setName("happiness");
 	_happinessLabel->setFont(font);
 	_happinessLabel->textInfo().setColor(Vector4(0, 0, 0, 1));
 	_happinessLabel->setText("Happiness: 100%");
@@ -200,12 +204,22 @@ void MainState::initialize() {
 	_toyButtonPos(0) += _happinessLabel->size()(0) + 32;
 
 	_moneyLabel = _menu->createChild<Label>();
+	_moneyLabel->setName("money");
 	_moneyLabel->setFont(font);
 	_moneyLabel->textInfo().setColor(Vector4(0, 0, 0, 1));
 	_moneyLabel->setText("Money: 999999$");
 	_moneyLabel->resizeToText();
 	_moneyLabel->place(_toyButtonPos + Vector2(0, 80 - _moneyLabel->size()(1)) / 2);
 	_toyButtonPos(0) += _moneyLabel->size()(0) + 32;
+
+	_catLabel = _menu->createChild<Label>();
+	_catLabel->setName("cat");
+	_catLabel->setFont(font);
+	_catLabel->textInfo().setColor(Vector4(0, 0, 0, 1));
+	_catLabel->setText("Cats: 999, Deaths: 999");
+	_catLabel->resizeToText();
+	_catLabel->place(_toyButtonPos + Vector2(0, 80 - _catLabel->size()(1)) / 2);
+	_toyButtonPos(0) += _catLabel->size()(0) + 32;
 
 	_dialog = _gui.createWidget<Widget>();
 	_dialog->setEnabled(false);
@@ -578,9 +592,17 @@ void MainState::setMoney(int money) {
 	_basketButton->update();
 }
 
+void MainState::setSpawnDeath(int spawn, int death) {
+	_spawnCount = spawn;
+	_deathCount = death;
+
+	_catLabel->setText(cat("Cats: ", _spawnCount - _deathCount, ", Deaths: ", _deathCount));
+}
 
 EntityRef MainState::spawnKitten(const Vector2& pos) {
 	EntityRef kitten = _entities.cloneEntity(_kittenModel, _kittenLayer, "kitten");
+	setSpawnDeath(_spawnCount + 1, _deathCount);
+	setMoney(_money + 50);
 
 	if(pos(0) >= 0) {
 		kitten.placeAt(pos);
@@ -606,10 +628,15 @@ EntityRef MainState::spawnKitten(const Vector2& pos) {
 void MainState::startGame() {
 	loadLevel(_levelPath);
 
-	spawnKitten(Vector2(120, 180));
+	_spawnCount = 0;
+	_deathCount = 0;
 
 	setHappiness(1);
-	setMoney(100);
+	setMoney(0);
+	_kittenProgress = 0;
+	_payProgress = 0;
+
+	spawnKitten(Vector2(120, 180));
 
 	showDialog("Facilis ex assumenda quisquam dolor ipsam. Ut nostrum mollitia est eaque. Pariatur omnis alias quia necessitatibus voluptatibus iusto voluptates explicabo. Ut sed non quia possimus quo voluptas. Incidunt est eos in molestias qui. Itaque accusamus ea quis in molestiae.\n\nPorro aut adipisci vel natus. Sit est magni est est. Mollitia et suscipit debitis exercitationem soluta.\n\nDolores qui libero ad asperiores. Officiis ut sunt aut. Facilis perspiciatis voluptatem natus rerum distinctio excepturi aut.");
 
@@ -639,6 +666,18 @@ void MainState::updateTick() {
 	if(_state == STATE_PLAY) {
 		_kittens.update();
 		_toys.update();
+
+		_kittenProgress += (0.25 + 0.75 * _happiness) / KITTEN_TIME * TICK_LENGTH_IN_SEC;
+		if(_kittenProgress >= 1) {
+			spawnKitten();
+			_kittenProgress -= 1;
+		}
+
+		_payProgress += .2 * TICK_LENGTH_IN_SEC;
+		if(_payProgress >= 1) {
+			setMoney(_money + _spawnCount - _deathCount);
+			_payProgress -= 1;
+		}
 
 		_entities.updateWorldTransforms();
 		_collisions.findCollisions();

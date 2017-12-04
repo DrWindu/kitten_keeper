@@ -304,6 +304,7 @@ void KittenComponentManager::update() {
 		if (kitten.sick > KIT_MAX) { // 1
 			kitten.s = DECOMPOSING;
 			kitten.setEnabled(false);
+			_ms->setSpawnDeath(_ms->_spawnCount, _ms->_deathCount + 1);
 			dbgLogger.warning("Kit iz ded.");
 			continue;
 		} else if (kitten.needy > KIT_MAX) { // 2

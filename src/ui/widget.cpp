@@ -45,8 +45,8 @@ Widget::Widget(Gui* gui, Widget* parent)
 }
 
 Widget::~Widget() {
-	for(Widget* child: _children)
-		delete child;
+	while(_children.size())
+		delete _children.back();
 
 	if(_parent) {
 		_parent->removeChild(this);
