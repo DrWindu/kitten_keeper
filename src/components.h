@@ -193,6 +193,7 @@ public:
 public:
 	ToyType        type;
 	lair::Vector2i size;
+	int            cost;
 
 	State         state;
 	State         startState;

@@ -141,6 +141,8 @@ void GameView::endGrab() {
 	bool canPlace = canPlaceToy(toy, _grabEntity.position2());
 
 	if(canPlace) {
+		if(toy->startState == ToyComponent::NONE)
+			_mainState->setMoney(_mainState->_money - toy->cost);
 		toy->state = ToyComponent::PLACED;
 		sprite->setColor(Vector4(1, 1, 1, 1));
 	}

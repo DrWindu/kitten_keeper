@@ -64,6 +64,7 @@ __models__ = {
 			toy = {
 				type = eat
 				size = Vector(3, 3)
+				cost = 10
 			}
 		}
 
@@ -85,6 +86,7 @@ __models__ = {
 			toy = {
 				type = play
 				size = Vector(3, 3)
+				cost = 20
 			}
 		}
 
@@ -106,6 +108,7 @@ __models__ = {
 			toy = {
 				type = piss
 				size = Vector(4, 3)
+				cost = 10
 			}
 		}
 
@@ -127,6 +130,7 @@ __models__ = {
 			toy = {
 				type = heal
 				size = Vector(3, 3)
+				cost = 50
 			}
 		}
 
@@ -148,6 +152,7 @@ __models__ = {
 			toy = {
 				type = sleep
 				size = Vector(4, 3)
+				cost = 30
 			}
 		}
 	}

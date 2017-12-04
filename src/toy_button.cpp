@@ -62,10 +62,6 @@ void ToyButton::setModel(EntityRef model) {
 	_model = model;
 }
 
-void ToyButton::setCost(int cost) {
-	_cost = cost;
-}
-
 void ToyButton::setToyName(const String& name) {
 	_toyName = name;
 }
@@ -86,7 +82,10 @@ void ToyButton::layout() {
 }
 
 void ToyButton::update() {
-	if(_mainState->_money < _cost) {
+	ToyComponent* toy = _mainState->_toys.get(_model);
+	int cost = toy? toy->cost: 10;
+
+	if(_mainState->_money < cost) {
 		_picture->setPictureColor(Vector4(.5, .5, .5, 1));
 	}
 	else {
@@ -95,9 +94,11 @@ void ToyButton::update() {
 }
 
 void ToyButton::mouseReleaseEvent(MouseEvent& event) {
-	if(event.button() == MOUSE_LEFT && _mainState->_money >= _cost
+	ToyComponent* toy = _mainState->_toys.get(_model);
+	int cost = toy? toy->cost: 10;
+
+	if(event.button() == MOUSE_LEFT && _mainState->_money >= cost
 	        && _mainState->_state == STATE_PLAY) {
-		_mainState->setMoney(_mainState->_money - _cost);
 		EntityRef toy = _mainState->_entities.cloneEntity(
 		                    _model, _mainState->_toyLayer, _toyName.c_str());
 		Vector2 scenePos = _mainState->_gameView->sceneFromScreen(event.position());

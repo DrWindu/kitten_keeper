@@ -426,6 +426,7 @@ ToyComponent::ToyComponent(Manager* manager, _Entity* entity)
     : Component(manager, entity)
     , type()
     , size(1, 1)
+    , cost(10)
     , state(NONE)
 {
 }
@@ -436,6 +437,7 @@ const PropertyList& ToyComponent::properties() {
 	if(props.nProperties() == 0) {
 		props.addProperty("type", toyTypeInfo(), &ToyComponent::type);
 		props.addProperty("size", &ToyComponent::size);
+		props.addProperty("cost", &ToyComponent::cost);
 	}
 	return props;
 }

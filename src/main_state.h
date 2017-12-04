@@ -112,7 +112,7 @@ public:
 	void loadMusic(const Path& sound);
 	void playMusic(const Path& music);
 
-	ToyButton* createToyButton(EntityRef model, int cost, const String& name, const String& picture,
+	ToyButton* createToyButton(EntityRef model, const String& name, const String& picture,
 	                           const String& description);
 
 	EntityRef getEntity(const String& name, const EntityRef& ancestor = EntityRef());

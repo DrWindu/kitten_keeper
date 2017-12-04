@@ -179,16 +179,16 @@ void MainState::initialize() {
 	_menu->setFrameTexture("white.png");
 	_menu->setFrameColor(Vector4(.8, .6, .3, 1));
 
-	_foodButton   = createToyButton(_foodModel, 10, "food", "gamelle.png",
-	                                "Food\nCost: 10$\n\nBecause kittens need to eat. Can I haz Cheezburger ?");
-	_toyButton    = createToyButton(_toyModel, 20, "toy", "jouet.png",
-	                                "Toy\nCost: 20$\n\nYaaay ! Toy ! Everything is a Toy. I toy. You toy.");
-	_litterButton = createToyButton(_litterModel, 10, "litter", "litiere.png",
-	                                "Litter\nCost: 10$\n\nBecause kittens need to ***.");
-	_pillButton   = createToyButton(_pillModel, 50, "pill", "medoc.png",
-	                                "Medecine\nCost: 50$\n\nHeal sick kittens. Also, DRUUUUUUUUUUG !");
-	_basketButton = createToyButton(_basketModel, 50, "basket", "paniere.png",
-	                                "Basket\nCost: 50$\n\nIf I fit, I sleep.");
+	_foodButton   = createToyButton(_foodModel, "Food", "gamelle.png",
+	                                "Because kittens need to eat. Can I haz Cheezburger ?");
+	_toyButton    = createToyButton(_toyModel, "Toy", "jouet.png",
+	                                "Yaaay ! Toy ! Everything is a Toy. I toy. You toy.");
+	_litterButton = createToyButton(_litterModel, "Litter", "litiere.png",
+	                                "Because kittens need to ***.");
+	_pillButton   = createToyButton(_pillModel, "Medecine", "medoc.png",
+	                                "Heal sick kittens. Also, DRUUUUUUUUUUG !");
+	_basketButton = createToyButton(_basketModel, "Basket", "paniere.png",
+	                                "If I fit, I sleep.");
 
 	_happinessLabel = _menu->createChild<Label>();
 	_happinessLabel->setFont(font);
@@ -455,16 +455,18 @@ void MainState::playMusic(const Path& sound) {
 }
 
 
-ToyButton* MainState::createToyButton(EntityRef model, int cost, const String& name,
+ToyButton* MainState::createToyButton(EntityRef model, const String& name,
                                       const String& picture, const String& description) {
+	ToyComponent* toy = _toys.get(model);
+	int cost = toy? toy->cost: 10;
+
 	ToyButton* button = _gui.createWidget<ToyButton>();
 	button->place(_toyButtonPos);
 	button->setMainState(this);
 	button->setPicture(picture);
 	button->setModel(model);
-	button->setCost(cost);
 	button->setToyName(name);
-	button->setDescription(description);
+	button->setDescription(cat(name, "\nCost: ", cost, "$\n\n", description));
 	button->layout();
 
 	_toyButtonPos(0) += 88;
