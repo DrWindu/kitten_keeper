@@ -69,6 +69,8 @@ TriggerComponentManager::TriggerComponentManager()
 #define KIT_FEED 0.4f
 #define KIT_PISS 0.6f
 
+#define KIT_ANIM_LEN 0.4f
+
 KittenComponent::KittenComponent(Manager* manager, _Entity* entity) :
 	Component(manager, entity),
 	sick(0),
@@ -78,7 +80,9 @@ KittenComponent::KittenComponent(Manager* manager, _Entity* entity) :
 	needy(2),
 	s(SITTING),
 	t(0),
-	dst(0,0)
+    dst(0,0),
+    anim(ANIM_IDLE),
+    animTime(0)
 {
 }
 
@@ -123,6 +127,44 @@ void KittenComponentManager::setBubble(EntityRef kitten, BubbleType bubbleType) 
 	}
 }
 
+
+void KittenComponentManager::setAnim(KittenComponent& kitten, KittenAnim anim) {
+	if(kitten.anim == anim)
+		return;
+
+	SpriteComponent* sprite = _ms->_sprites.get(kitten.entity());
+	if(!sprite) {
+		dbgLogger.error("Kitten without sprite ?");
+		return;
+	}
+
+	kitten.animTime = 0;
+	switch(anim) {
+	case ANIM_IDLE:  sprite->setTileIndex(10); break;
+	case ANIM_TOP:   sprite->setTileIndex(6); break;
+	case ANIM_RIGHT: sprite->setTileIndex(0); break;
+	case ANIM_DOWN:  sprite->setTileIndex(4); break;
+	case ANIM_LEFT:  sprite->setTileIndex(2); break;
+	case ANIM_SLEEP: sprite->setTileIndex(8); break;
+	case ANIM_PLAY:  sprite->setTileIndex(9); break;
+	case ANIM_DEAD:  sprite->setTileIndex(11); break;
+	}
+}
+
+void KittenComponentManager::updateAnim(KittenComponent& kitten) {
+	SpriteComponent* sprite = _ms->_sprites.get(kitten.entity());
+	if(!sprite) {
+		dbgLogger.error("Kitten without sprite ?");
+		return;
+	}
+
+	if(sprite->tileIndex() < 8 && kitten.animTime >= KIT_ANIM_LEN) {
+		kitten.animTime -= KIT_ANIM_LEN;
+		sprite->setTileIndex(sprite->tileIndex() ^ 1);
+	}
+
+	kitten.animTime += TICK_LENGTH_IN_SEC;
+}
 
 void KittenComponentManager::seek(KittenComponent& k, ToyType tt, bool now)
 {
@@ -331,6 +373,8 @@ void KittenComponentManager::update() {
 				continue;
 			}
 		}
+
+		updateAnim(kitten);
 	}
 }
 

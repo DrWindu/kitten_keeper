@@ -6,11 +6,11 @@ __models__ = {
 
 			// Components
 			sprite = {
-				texture       = "chat1.png"
+			    texture       = "Kitten1.png"
 				anchor        = Vector(.5, .5)
 				color         = Vector(1, 1, 1, 1)
-				tile_grid     = Vector(1, 1)
-				tile_index    = 0
+				tile_grid     = Vector(4, 3)
+				tile_index    = 10
 				blend         = alpha
 				texture_flags = "bilinear_no_mipmap | clamp"
 			}

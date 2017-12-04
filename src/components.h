@@ -72,6 +72,17 @@ enum BubbleType {
 	BUBBLE_NONE
 };
 
+enum KittenAnim {
+	ANIM_IDLE,
+	ANIM_TOP,
+	ANIM_RIGHT,
+	ANIM_DOWN,
+	ANIM_LEFT,
+	ANIM_SLEEP,
+	ANIM_PLAY,
+	ANIM_DEAD,
+};
+
 enum ToyType {
 	TOY_FEED,
 	TOY_PLAY,
@@ -137,6 +148,9 @@ public:
 	unsigned s; // Not "status s;" because fuck it, that's why.
 	double t;
 	Vector2 dst;
+
+	KittenAnim anim;
+	float      animTime;
 };
 
 class KittenComponentManager : public DenseComponentManager<KittenComponent> {
@@ -146,6 +160,8 @@ public:
 
 
 	void setBubble(EntityRef kitten, BubbleType bubbleType);
+	void setAnim(KittenComponent& kitten, KittenAnim anim);
+	void updateAnim(KittenComponent& kitten);
 	void seek(KittenComponent& k, ToyType tt, bool now);
 	void update();
 
