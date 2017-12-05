@@ -4,7 +4,9 @@ A kitten managment game for LD40 !
 
 ## Presentation
 
-[ TODO ! ]
+Kittens are so cute ! You cannot have to many of them. Or can you ?
+
+You have to take care of kittens. Give them food, a place to sleep, etc. and soon you will have plenty of them. What could possibly go wrong ?
 
 ## Compilation
 

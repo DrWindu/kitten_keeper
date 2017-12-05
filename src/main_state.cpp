@@ -181,7 +181,7 @@ void MainState::initialize() {
 	loadSound("kittenmeow2.wav");
 	loadSound("kittenmeow3.wav");
 
-//	loadMusic("ending.mp3");
+	loadMusic("ending.mp3");
 
 //	loader()->load<ImageLoader>("battery1.png");
 
@@ -472,7 +472,7 @@ void MainState::loadSound(const Path& sound) {
 void MainState::playSound(const Path& sound) {
 	AssetSP asset = assets()->getAsset(sound);
 	auto aspect = asset->aspect<SoundAspect>();
-	aspect->_get().setVolume(0.3);
+	aspect->_get().setVolume(game()->config().soundVolume);
 	audio()->playSound(asset);
 }
 
@@ -609,6 +609,8 @@ void MainState::setHappiness(float happiness) {
 			game()->setNextState(game()->splashState());
 			quit();
 
+			playMusic("ending.mp3");
+
 			e.accept();
 		};
 	}
@@ -672,7 +674,15 @@ void MainState::startGame() {
 
 	spawnKitten(Vector2(120, 180));
 
-	showDialog("Welcome to Kitten Keeper, a game about how taking care of OMG IT'S A KITTEN it's so cute come here kitty kitty ! Oh there's a little friend for you oh aren't they cute playing together and oh there's another, cool, I like kittens and another and wait isn't that a bit much and woah there, boys calm down and OMG THERE'S TOO MANY OF'EM and now they're getting sick they're dying by the truckload.\n\nAnd this will all be your fault. But the only winning move is to get more kittens, so what can you do ?");
+	showDialog("Welcome to Kitten Keeper, a game about how taking care of OMG IT'S A KITTEN it's so cute come here kitty kitty ! Oh there's a little friend for you oh aren't they cute playing together and oh there's another, cool, I like kittens and another and wait isn't that a bit much and woah there, boys calm down and OMG THERE'S TOO MANY OF'EM and now they're getting sick they're dying by the truckload.\n\nAnd this will all be your fault. But the only winning move is to get more kittens, so what can you do ?"
+	           "\n\n--------\n\n"
+	           "OK. Stay calm. You need to take care of the kittens. To do this, you must buy kitten stuff (use the buttons below) and place it on the ground. Cats need:\n"
+	           "- Food\n"
+	           "- Toys\n"
+	           "- Litter\n"
+	           "- Medecine (if they are sick)\n"
+	           "- A basket to sleep\n\n"
+	           "Kittens cannot be to many to use the same item, so be sure to place plenty of them. If they don't have what they need, bad things happen and happiness go down ! Do your best to keep the kittens happy. Happy cats mean more cats. The more you have, the better ! (or worst ?)");
 
 	//audio()->playMusic(assets()->getAsset("music.ogg"));
 	//audio()->playSound(assets()->getAsset("sound.ogg"), 2);
@@ -734,6 +744,13 @@ void MainState::updateTick() {
 			_happiness = 1;
 		setHappiness(_happiness);
 
+		for(KittenComponent& kitten: _kittens) {
+			EntityRef entity = kitten.entity();
+			Vector3 p = entity.position3();
+			p(2) = (1 - (p(1) / 1080)) / 10;
+			entity.moveTo(p);
+		}
+
 		_entities.updateWorldTransforms();
 		_collisions.findCollisions();
 
@@ -741,10 +758,10 @@ void MainState::updateTick() {
 		updateTriggers();
 	}
 	else if(_state == STATE_PAUSE) {
-		if(_okInput->isPressed()) {
-			MouseEvent event(MouseEvent::MOUSE_UP, Vector2(), MOUSE_LEFT);
-			_dialogButton->onMouseUp(_dialogButton, event);
-		}
+//		if(_okInput->justPressed()) {
+//			MouseEvent event(MouseEvent::MOUSE_UP, Vector2(), MOUSE_LEFT);
+//			_dialogButton->onMouseUp(_dialogButton, event);
+//		}
 	}
 
 	_entities.updateWorldTransforms();
