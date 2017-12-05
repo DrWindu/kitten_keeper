@@ -204,6 +204,10 @@ Vector2 KittenComponentManager::findRandomDest(const Vector2& p, float radius) {
 	return (tryCount < 10)? dest: p;
 }
 
+float KittenComponentManager::urgency(float x) {
+	return (x - KIT_LOW + (x > KIT_BAD ? KIT_LOW : 0) ) / 100;
+}
+
 /* stat: LOW, BAD, MAX (priority)
  * SICK:   (6)seek/use, (6)seek/use, (1)die
  * NEEDY:  (B)use,      (7)seek/use, (2)make a mess
