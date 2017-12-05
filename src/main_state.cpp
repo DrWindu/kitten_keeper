@@ -636,7 +636,7 @@ void MainState::setSpawnDeath(int spawn, int death) {
 EntityRef MainState::spawnKitten(const Vector2& pos) {
 	EntityRef kitten = _entities.cloneEntity(_kittenModel, _kittenLayer, "kitten");
 	setSpawnDeath(_spawnCount + 1, _deathCount);
-	setMoney(_money + 50 * _happiness);
+	setMoney(_money + 20 * _happiness);
 
 	if(pos(0) >= 0) {
 		kitten.placeAt(pos);
@@ -666,7 +666,7 @@ void MainState::startGame() {
 	_deathCount = 0;
 
 	setHappiness(1);
-	setMoney(0);
+	setMoney(50);
 	_kittenProgress = 0;
 	_payProgress = 0;
 
@@ -723,7 +723,7 @@ void MainState::updateTick() {
 			_kittenProgress -= 1;
 		}
 
-		_payProgress += .2 * nKittens * _happiness * TICK_LENGTH_IN_SEC;
+		_payProgress += .2 * ceil(nKittens/10) * _happiness * TICK_LENGTH_IN_SEC;
 		if(_payProgress >= 1) {
 			setMoney(_money + 1);
 			_payProgress -= 1;
