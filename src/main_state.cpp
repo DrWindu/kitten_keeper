@@ -672,7 +672,7 @@ void MainState::startGame() {
 
 	spawnKitten(Vector2(120, 180));
 
-	showDialog("Facilis ex assumenda quisquam dolor ipsam. Ut nostrum mollitia est eaque. Pariatur omnis alias quia necessitatibus voluptatibus iusto voluptates explicabo. Ut sed non quia possimus quo voluptas. Incidunt est eos in molestias qui. Itaque accusamus ea quis in molestiae.\n\nPorro aut adipisci vel natus. Sit est magni est est. Mollitia et suscipit debitis exercitationem soluta.\n\nDolores qui libero ad asperiores. Officiis ut sunt aut. Facilis perspiciatis voluptatem natus rerum distinctio excepturi aut.");
+	showDialog("Welcome to Kitten Keeper, a game about how taking care of OMG IT'S A KITTEN it's so cute come here kitty kitty ! Oh there's a little friend for you oh aren't they cute playing together and oh there's another, cool, I like kittens and another and wait isn't that a bit much and woah there, boys calm down and OMG THERE'S TOO MANY OF'EM and now they're getting sick they're dying by the truckload.\n\nAnd this will all be your fault. But the only winning move is to get more kittens, so what can you do ?");
 
 	//audio()->playMusic(assets()->getAsset("music.ogg"));
 	//audio()->playSound(assets()->getAsset("sound.ogg"), 2);
