@@ -181,7 +181,7 @@ void MainState::initialize() {
 	loadSound("kittenmeow2.wav");
 	loadSound("kittenmeow3.wav");
 
-//	loadMusic("ending.mp3");
+	loadMusic("ending.mp3");
 
 //	loader()->load<ImageLoader>("battery1.png");
 
@@ -608,6 +608,8 @@ void MainState::setHappiness(float happiness) {
 
 			game()->setNextState(game()->splashState());
 			quit();
+
+			playMusic("ending.mp3");
 
 			e.accept();
 		};
