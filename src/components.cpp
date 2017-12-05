@@ -270,15 +270,15 @@ void KittenComponentManager::update() {
 
 		// Bubble setting.
 		setBubble(entity, BUBBLE_NONE);
-		if (kitten.bored  > KIT_LOW) { setBubble(entity, BUBBLE_TOY  , kitten.bored  / 100); }
-		if (kitten.tired  > KIT_LOW) { setBubble(entity, BUBBLE_SLEEP, kitten.tired  / 100); }
-		if (kitten.hungry > KIT_LOW) { setBubble(entity, BUBBLE_FOOD , kitten.hungry / 100); }
-		if (kitten.needy  > KIT_LOW) { setBubble(entity, BUBBLE_PEE  , kitten.needy  / 100); }
-		if (kitten.bored  > KIT_BAD) { setBubble(entity, BUBBLE_TOY  , kitten.bored  / 100); }
-		if (kitten.tired  > KIT_BAD) { setBubble(entity, BUBBLE_SLEEP, kitten.tired  / 100); }
-		if (kitten.hungry > KIT_BAD) { setBubble(entity, BUBBLE_FOOD , kitten.hungry / 100); }
-		if (kitten.needy  > KIT_BAD) { setBubble(entity, BUBBLE_PEE  , kitten.needy  / 100); }
-		if (kitten.sick   > KIT_LOW) { setBubble(entity, BUBBLE_PILL , kitten.sick   / 100); }
+		if (kitten.sick > KIT_LOW) { setBubble(entity, BUBBLE_PILL, kitten.sick / 100); }
+		else if (kitten.needy  > KIT_BAD) { setBubble(entity, BUBBLE_PEE  , kitten.needy  / 100); }
+		else if (kitten.hungry > KIT_BAD) { setBubble(entity, BUBBLE_FOOD , kitten.hungry / 100); }
+		else if (kitten.tired  > KIT_BAD) { setBubble(entity, BUBBLE_SLEEP, kitten.tired  / 100); }
+		else if (kitten.bored  > KIT_BAD) { setBubble(entity, BUBBLE_TOY  , kitten.bored  / 100); }
+		else if (kitten.needy  > KIT_LOW) { setBubble(entity, BUBBLE_PEE  , kitten.needy  / 100); }
+		else if (kitten.hungry > KIT_LOW) { setBubble(entity, BUBBLE_FOOD , kitten.hungry / 100); }
+		else if (kitten.tired  > KIT_LOW) { setBubble(entity, BUBBLE_SLEEP, kitten.tired  / 100); }
+		else if (kitten.bored  > KIT_LOW) { setBubble(entity, BUBBLE_TOY  , kitten.bored  / 100); }
 
 		// Current activity.
 		kitten.t -= TICK_LENGTH_IN_SEC;
@@ -286,11 +286,15 @@ void KittenComponentManager::update() {
 		switch (kitten.s) {
 			case SITTING:
 				if (rand()%(8*TICKS_PER_SEC) == 0) {
+					_ms->playSound("kittenmeow1.wav");
 					kitten.bored += KIT_BPT;
 					kitten.s = WALKING;
 					kitten.bypass = BYPASS_NONE;
 					kitten.dst = findRandomDest(entity.position2(), 400);
-				}
+				} else if (rand()%(12*TICKS_PER_SEC) == 0)
+					_ms->playSound("kittenmeow2.wav");
+				else if (rand()%(10*TICKS_PER_SEC) == 0)
+					_ms->playSound("kittenmeow3.wav");
 				break;
 		    case WALKING: {
 			    Vector2 v = kitten.dst - entity.position2();
