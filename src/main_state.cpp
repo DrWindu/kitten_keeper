@@ -758,10 +758,10 @@ void MainState::updateTick() {
 		updateTriggers();
 	}
 	else if(_state == STATE_PAUSE) {
-		if(_okInput->isPressed()) {
-			MouseEvent event(MouseEvent::MOUSE_UP, Vector2(), MOUSE_LEFT);
-			_dialogButton->onMouseUp(_dialogButton, event);
-		}
+//		if(_okInput->justPressed()) {
+//			MouseEvent event(MouseEvent::MOUSE_UP, Vector2(), MOUSE_LEFT);
+//			_dialogButton->onMouseUp(_dialogButton, event);
+//		}
 	}
 
 	_entities.updateWorldTransforms();
