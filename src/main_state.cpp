@@ -742,6 +742,13 @@ void MainState::updateTick() {
 			_happiness = 1;
 		setHappiness(_happiness);
 
+		for(KittenComponent& kitten: _kittens) {
+			EntityRef entity = kitten.entity();
+			Vector3 p = entity.position3();
+			p(2) = (1 - (p(1) / 1080)) / 10;
+			entity.moveTo(p);
+		}
+
 		_entities.updateWorldTransforms();
 		_collisions.findCollisions();
 
