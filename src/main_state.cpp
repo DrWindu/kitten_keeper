@@ -710,16 +710,16 @@ void MainState::updateTick() {
 #endif
 
 	if(_state == STATE_PLAY) {
-//		if(_foodInput->justPressed())
-//			_gameView->createToy(_foodModel);
-//		if(_toyInput->justPressed())
-//			_gameView->createToy(_toyModel);
-//		if(_litterInput->justPressed())
-//			_gameView->createToy(_litterModel);
-//		if(_medecineInput->justPressed())
-//			_gameView->createToy(_pillModel);
-//		if(_basketInput->justPressed())
-//			_gameView->createToy(_basketModel);
+		if(_foodInput->justPressed())
+			_gameView->createToy(_foodModel);
+		if(_toyInput->justPressed())
+			_gameView->createToy(_toyModel);
+		if(_litterInput->justPressed())
+			_gameView->createToy(_litterModel);
+		if(_medecineInput->justPressed())
+			_gameView->createToy(_pillModel);
+		if(_basketInput->justPressed())
+			_gameView->createToy(_basketModel);
 
 		_kittens.update();
 		_toys.update();
