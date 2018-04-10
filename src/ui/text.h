@@ -28,7 +28,7 @@
 #include <lair/core/shapes.h>
 #include <lair/core/bitmap_font.h>
 
-#include <lair/render_gl2/texture.h>
+#include <lair/render_gl3/texture.h>
 
 #include <lair/ec/sprite_renderer.h>
 #include <lair/ec/bitmap_text_component.h>
@@ -42,7 +42,6 @@ public:
 	const lair::Vector4& color() const;
 	const lair::Vector2& anchor() const;
 	lair::BlendingMode blendingMode() const;
-	unsigned textureFlags() const;
 
 	lair::Vector2 textSize(const lair::String& text, int width = 99999) const;
 
@@ -50,7 +49,6 @@ public:
 	void setColor(const lair::Vector4& color);
 	void setAnchor(const lair::Vector2& anchor);
 	void setBlendingMode(lair::BlendingMode blendingMode);
-	void setTextureFlags(unsigned textureFlags);
 
 	void preRender(lair::SpriteRenderer* renderer);
 	void render(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer,
@@ -59,12 +57,11 @@ public:
 
 protected:
 	lair::BitmapFontAspectWP _font;
-	lair::TextureAspectWP    _texture;
+	lair::TextureSetCSP      _textureSet;
 	lair::Vector4            _color;
 	lair::TextLayout         _layout;
 	lair::Vector2            _anchor;
 	lair::BlendingMode       _blendingMode;
-	unsigned                 _textureFlags;
 };
 
 

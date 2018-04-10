@@ -19,7 +19,11 @@
  */
 
 
-#include "lair/core/property.h"
+#include <lair/core/property.h>
+
+#include <lair/render_gl3/texture_set.h>
+
+#include <lair/ec/collision_component.h>
 
 #include "main_state.h"
 #include "splash_state.h"
@@ -51,8 +55,19 @@ Game::Game(int argc, char** argv)
       _mainState(),
       _splashState(),
       _levelPath("map0.json") {
-	serializer().registerType<Shape2D>();
-	serializer().registerType<Shape2DVector>();
+	serializer().registerType<Shape2D>(
+	            static_cast<bool(*)(LdlParser&, Shape2D&)>(ldlRead),
+	            static_cast<bool(*)(LdlWriter&, const Shape2D&)>(ldlWrite));
+	serializer().registerType<Shape2DVector>(
+	            static_cast<bool(*)(LdlParser&, Shape2DVector&)>(ldlRead),
+	            static_cast<bool(*)(LdlWriter&, const Shape2DVector&)>(ldlWrite));
+
+	serializer().registerType<TextureSetCSP>(
+	    [this](LdlParser& parser, TextureSetCSP& ts) {
+		    return ldlRead(parser, ts, _renderer, _loader.get());
+	    },
+	    static_cast<bool(*)(LdlWriter&, const TextureSetCSP&)>(ldlWrite)
+	);
 }
 
 
@@ -82,7 +97,6 @@ void Game::initialize() {
 
 	_mainState->initialize();
 	_mainState->setLevel(_levelPath);
-
 }
 
 

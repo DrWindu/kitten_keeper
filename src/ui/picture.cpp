@@ -32,7 +32,6 @@ Picture::Picture(Gui* gui, Widget* parent)
     : Widget(gui, parent)
     , _color(Vector4::Constant(1))
     , _blendingMode(BLEND_ALPHA)
-    , _textureFlags(Texture::BILINEAR_NO_MIPMAP)
 {
 }
 
@@ -40,8 +39,19 @@ void Picture::setPictureColor(const Vector4& color) {
 	_color = color;
 }
 
+void Picture::setTextureSet(lair::TextureSetCSP textureSet) {
+	_textureSet = textureSet;
+}
+
+void Picture::setTextureSet(const lair::TextureSet& textureSet) {
+	_textureSet = gui()->spriteRenderer()->getTextureSet(textureSet);
+}
+
 void Picture::setTexture(TextureAspectSP texture) {
-	_texture = texture;
+	SamplerSP sampler = _textureSet? _textureSet->getSampler(TexColor):
+	                                 gui()->spriteRenderer()->defaultSampler();
+	_textureSet = gui()->spriteRenderer()->getTextureSet(
+	                  TexColor, texture, sampler);
 }
 
 void Picture::setTexture(AssetSP texture) {
@@ -66,12 +76,8 @@ void Picture::setBlendingMode(BlendingMode blendingMode) {
 	_blendingMode = blendingMode;
 }
 
-void Picture::setTextureFlags(unsigned flags) {
-	_textureFlags = flags;
-}
-
 void Picture::resizeToPicture() {
-	TextureAspectSP texture = _texture.lock();
+	TextureAspectSP texture = _textureSet? _textureSet->getTextureAspect(TexColor): nullptr;
 	ImageAspectSP image;
 	if(texture)
 		image = texture->asset()->aspect<ImageAspect>();
@@ -88,7 +94,7 @@ float Picture::render(RenderPass& renderPass, SpriteRenderer* renderer,
 
 	depth = renderFrame(renderPass, renderer, transform, depth);
 
-	TextureAspectSP texAspect = _texture.lock();
+	TextureAspectSP texAspect = _textureSet->getTextureAspect(TexColor);
 	if(texAspect) {
 		const Texture& tex = texAspect->get();
 
@@ -103,11 +109,9 @@ float Picture::render(RenderPass& renderPass, SpriteRenderer* renderer,
 
 		if(count) {
 			RenderPass::DrawStates states;
-			states.shader       = renderer->shader().shader;
-			states.buffer       = renderer->buffer();
-			states.format       = renderer->format();
-			states.texture      = &texAspect->_get();
-			states.textureFlags = _textureFlags;
+			states.shader       = renderer->shader()->get();
+			states.vertices     = renderer->vertexArray();
+			states.textureSet   = _textureSet;
 			states.blendingMode = _blendingMode;
 
 			Vector4i tileInfo(1, 1, tex.width(), tex.height());

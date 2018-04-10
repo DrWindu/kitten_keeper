@@ -37,7 +37,7 @@ SplashState::SplashState(Game* game)
 
       _entities(log(), _game->serializer()),
       _renderPass(renderer()),
-      _spriteRenderer(renderer()),
+      _spriteRenderer(loader(), renderer()),
       _sprites(assets(), loader(), &_renderPass, &_spriteRenderer),
       _texts(loader(), &_renderPass, &_spriteRenderer),
 
@@ -94,7 +94,7 @@ void SplashState::initialize() {
 	loader()->waitAll();
 
 	// Set to true to debug OpenGL calls
-	renderer()->context()->setLogCalls(false);
+//	renderer()->context()->setLogCalls(true);
 
 	_initialized = true;
 }
@@ -168,7 +168,7 @@ bool SplashState::nextSplash() {
 		splashSprite = _sprites.addComponent(_splash);
 
 	splashSprite->setTexture(_splashQueue.front());
-	splashSprite->setTextureFlags(Texture::BILINEAR_NO_MIPMAP);
+//	splashSprite->setTextureFlags(Texture::BILINEAR_NO_MIPMAP);
 
 	loader()->waitAll();
 
@@ -225,16 +225,22 @@ void SplashState::updateFrame() {
 
 	glc->clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 
-	_renderPass.clear();
-	_spriteRenderer.clear();
+	bool buffersFilled = false;
+	while(!buffersFilled) {
+		_renderPass.clear();
 
-	_sprites.render(_entities.root(), _loop.frameInterp(), _camera);
-	_texts.render(_entities.root(), _loop.frameInterp(), _camera);
+		_spriteRenderer.beginRender();
+
+		_sprites.render(_entities.root(), _loop.frameInterp(), _camera);
+		_texts.render(_entities.root(), _loop.frameInterp(), _camera);
+
+		buffersFilled = _spriteRenderer.endRender();
+	}
 
 	_renderPass.render();
 
 	window()->swapBuffers();
-	glc->setLogCalls(false);
+//	glc->setLogCalls(true);
 
 	uint64 now = sys()->getTimeNs();
 	++_fpsCount;

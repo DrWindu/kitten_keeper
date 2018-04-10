@@ -27,7 +27,7 @@
 #include <lair/core/lair.h>
 #include <lair/core/shapes.h>
 
-#include <lair/render_gl2/texture.h>
+#include <lair/render_gl3/texture.h>
 
 #include <lair/ec/sprite_renderer.h>
 
@@ -38,6 +38,8 @@ public:
 	Picture(Gui* gui, Widget* parent = nullptr);
 
 	void setPictureColor(const lair::Vector4& color);
+	void setTextureSet(lair::TextureSetCSP textureSet);
+	void setTextureSet(const lair::TextureSet& textureSet);
 	void setTexture(lair::TextureAspectSP texture);
 	void setTexture(lair::AssetSP texture);
 	void setTexture(const lair::Path& logicPath);
@@ -50,10 +52,9 @@ public:
 	                   const lair::Matrix4& transform, float depth = 0) override;
 
 protected:
-	lair::Vector4         _color;
-	lair::TextureAspectWP _texture;
-	lair::BlendingMode    _blendingMode;
-	unsigned              _textureFlags;
+	lair::Vector4       _color;
+	lair::TextureSetCSP _textureSet;
+	lair::BlendingMode  _blendingMode;
 };
 
 

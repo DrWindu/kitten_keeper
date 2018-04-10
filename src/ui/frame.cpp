@@ -27,22 +27,22 @@
 using namespace lair;
 
 
-Frame::Frame(lair::TextureAspectSP texture, const Vector4& color)
-    : _texture(texture)
+Frame::Frame(lair::TextureSetCSP textureSet, const Vector4& color)
+    : _textureSet(textureSet)
     , _color(color)
 {
 }
 
-TextureAspectSP Frame::texture() const {
-	return _texture.lock();
+TextureSetCSP Frame::textureSet() const {
+	return _textureSet;
 }
 
 const Vector4& Frame::color() const {
 	return _color;
 }
 
-void Frame::setTexture(TextureAspectSP texture) {
-	_texture = texture;
+void Frame::setTextureSet(TextureSetCSP textureSet) {
+	_textureSet = textureSet;
 }
 
 void Frame::setColor(const Vector4& color) {
@@ -51,16 +51,18 @@ void Frame::setColor(const Vector4& color) {
 
 void Frame::render(RenderPass& renderPass, SpriteRenderer* renderer,
                    const Matrix4& transform, const Box2& box, float depth) {
-	TextureAspectSP texAspect = texture();
-	if(texAspect) {
-		if(!texAspect->isValid()) {
-			// FIXME:
-//			texAspect->warnIfInvalid(gui()->loader()->log());
-			texAspect = renderer->defaultTexture();
-		}
+	TextureSetCSP  textureSet = _textureSet;
+	if(!textureSet)
+		return;
 
-		const Texture& tex = texAspect->get();
-		Vector2 tileSize = Vector2(tex.width(), tex.height()) / 3;
+	const Texture* texColor = textureSet? textureSet->getTextureOrWarn(TexColor, dbgLogger): nullptr;
+	if(!texColor) {
+		textureSet = renderer->defaultTextureSet();
+		texColor = textureSet->getTexture(TexColor);
+	}
+
+	if(texColor) {
+		Vector2 tileSize = Vector2(texColor->width(), texColor->height()) / 3;
 
 		Eigen::Array<bool, 2, 1> collapse = box.sizes().array() < tileSize.array() * 2;
 		Vector2  offset(collapse(0)? box.sizes()(0): tileSize(0),
@@ -102,15 +104,13 @@ void Frame::render(RenderPass& renderPass, SpriteRenderer* renderer,
 		unsigned indexCount = renderer->indexCount() - firstIndex;
 
 		RenderPass::DrawStates states;
-		states.shader       = renderer->shader().shader;
-		states.buffer       = renderer->buffer();
-		states.format       = renderer->format();
-		states.texture      = &texAspect->_get();
-		states.textureFlags = lair::Texture::BILINEAR_NO_MIPMAP;
+		states.shader       = renderer->shader()->get();
+		states.vertices     = renderer->vertexArray();
+		states.textureSet   = textureSet;
 		states.blendingMode = lair::BLEND_ALPHA;
 
 		Vector4i tileInfo;
-		tileInfo << 1, 1, tex.width(), tex.height();
+		tileInfo << 1, 1, texColor->width(), texColor->height();
 		const ShaderParameter* params = renderer->addShaderParameters(
 		            renderer->shader(), transform, 0, tileInfo);
 

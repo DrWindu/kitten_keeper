@@ -36,13 +36,13 @@ ToyButton::ToyButton(Gui* gui, Widget* parent)
     , _tooltip(createChild<Label>())
 {
 	setFrameTexture("frame.png");
-	setFrameColor(Vector4(.6, .5, .2, 1));
+	setFrameColor(srgba(.6, .5, .2, 1));
 
 	setFont("droid_sans_24.json");
 
 	_tooltip->setEnabled(false);
 	_tooltip->setFrameTexture("frame.png");
-	_tooltip->setFrameColor(Vector4(0, 0, 0, .8));
+	_tooltip->setFrameColor(srgba(0, 0, 0, .8));
 	_tooltip->setMargin(16);
 }
 
@@ -86,10 +86,10 @@ void ToyButton::update() {
 	int cost = toy? toy->cost: 10;
 
 	if(_mainState->_money < cost) {
-		_picture->setPictureColor(Vector4(.5, .5, .5, 1));
+		_picture->setPictureColor(srgba(.5, .5, .5, 1));
 	}
 	else {
-		_picture->setPictureColor(Vector4(1, 1, 1, 1));
+		_picture->setPictureColor(srgba(1, 1, 1, 1));
 	}
 }
 

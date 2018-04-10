@@ -28,7 +28,7 @@
 
 #include <lair/sys_sdl2/sys_module.h>
 
-#include <lair/render_gl2/render_pass.h>
+#include <lair/render_gl3/render_pass.h>
 
 #include <lair/ec/sprite_renderer.h>
 

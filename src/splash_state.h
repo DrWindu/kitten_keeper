@@ -31,8 +31,8 @@
 #include <lair/utils/interp_loop.h>
 #include <lair/utils/input.h>
 
-#include <lair/render_gl2/orthographic_camera.h>
-#include <lair/render_gl2/render_pass.h>
+#include <lair/render_gl3/orthographic_camera.h>
+#include <lair/render_gl3/render_pass.h>
 
 #include <lair/ec/entity.h>
 #include <lair/ec/entity_manager.h>

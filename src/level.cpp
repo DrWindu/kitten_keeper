@@ -216,7 +216,7 @@ EntityRef Level::createLayer(unsigned index, const char* name) {
 	TileLayerComponent* lc = _mainState->_tileLayers.addComponent(layer);
 	lc->setTileMap(_tileMapAspect);
 	lc->setLayerIndex(index);
-	lc->setTextureFlags(Texture::BILINEAR_NO_MIPMAP | Texture::REPEAT);
+//	lc->setTextureFlags(Texture::BILINEAR_NO_MIPMAP | Texture::REPEAT);
 	layer.placeAt(Vector3(0, 0, .01f * float(index)));
 
 //	CollisionComponent* cc = _mainState->_collisions.addComponent(layer);
