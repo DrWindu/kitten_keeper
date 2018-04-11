@@ -26,7 +26,8 @@
 #include <functional>
 
 #include <lair/core/lair.h>
-#include <lair/core/shapes.h>
+
+#include <lair/geometry/aligned_box.h>
 
 #include <lair/render_gl3/texture.h>
 

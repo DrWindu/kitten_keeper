@@ -25,7 +25,6 @@
 #include <vector>
 
 #include <lair/core/lair.h>
-#include <lair/core/shapes.h>
 #include <lair/core/bitmap_font.h>
 
 #include <lair/render_gl3/texture.h>
