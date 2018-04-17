@@ -98,38 +98,38 @@ void Level::initialize() {
 	_baseLayer = createLayer(_tileMap->nLayers() - 1, "layer_base");
 	_objects = _mainState->_entities.createEntity(_levelRoot, "objects");
 
-	for(unsigned oli = 0; oli < _tileMap->nObjectLayer(); ++oli) {
-		for(const Json::Value& obj: _tileMap->objectLayer(oli)["objects"]) {
-			std::string type = obj.get("type", "<no_type>").asString();
-			std::string name = obj.get("name", "<no_name>").asString();
+//	for(unsigned oli = 0; oli < _tileMap->nObjectLayer(); ++oli) {
+//		for(const Variant& obj: _tileMap->objectLayer(oli)["objects"]) {
+//			std::string type = obj.get("type", "<no_type>").asString();
+//			std::string name = obj.get("name", "<no_name>").asString();
 
-			EntityRef entity;
-//			if(type == "spawn") {
-//				entity = _mainState->_entities.createEntity(_levelRoot, name.c_str());
-//				Box2 box = objectBox(obj);
+//			EntityRef entity;
+////			if(type == "spawn") {
+////				entity = _mainState->_entities.createEntity(_levelRoot, name.c_str());
+////				Box2 box = objectBox(obj);
 
-//				entity.placeAt(Vector2(objectBox(obj).center()));
-////				entity.extra() = obj["properties"];
-//			}
-//			else if(type == "trigger") {
-//				entity = createTrigger(obj, name);
-//			}
-//			else if(type == "entity") {
-//				entity = createEntity(obj, name);
-//			}
-//			else if(type == "item") {
-//				entity = createItem(obj, name);
-//			}
-//			else if(type == "door") {
-//				entity = createDoor(obj, name);
-//			}
+////				entity.placeAt(Vector2(objectBox(obj).center()));
+//////				entity.extra() = obj["properties"];
+////			}
+////			else if(type == "trigger") {
+////				entity = createTrigger(obj, name);
+////			}
+////			else if(type == "entity") {
+////				entity = createEntity(obj, name);
+////			}
+////			else if(type == "item") {
+////				entity = createItem(obj, name);
+////			}
+////			else if(type == "door") {
+////				entity = createDoor(obj, name);
+////			}
 
-			if(!entity.isValid())
-				_mainState->log().warning(_path, ": Failed to load entity \"", name, "\" of type \"", type, "\"");
-			else
-				_entityMap.emplace(name, entity);
-		}
-	}
+//			if(!entity.isValid())
+//				_mainState->log().warning(_path, ": Failed to load entity \"", name, "\" of type \"", type, "\"");
+//			else
+//				_entityMap.emplace(name, entity);
+//		}
+//	}
 
 //	updateDepth();
 }

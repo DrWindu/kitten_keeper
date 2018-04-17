@@ -408,17 +408,6 @@ void MainState::setLevel(const Path& level) {
 
 	registerLevel(level);
 	loader()->waitAll();
-
-	for(auto& pathLevel: _levelMap) {
-		LevelSP level = pathLevel.second;
-		AssetSP levelAsset = assets()->getAsset(level->path());
-		TileMap& tileMap = assets()->getAspect<TileMapAspect>(levelAsset)->_get();
-
-		Path tileset = tileMap.properties().get("tileset", "tileset.png").asString();
-		loader()->load<ImageLoader>(tileset);
-	}
-
-	loader()->waitAll();
 }
 
 
@@ -440,13 +429,6 @@ void MainState::loadLevel(const Path& level) {
 
 	_level = _levelMap.at(level);
 	_level->initialize();
-
-	Path tileset = _level->tileMap()->properties().get("tileset", "tileset.png").asString();
-	AssetSP tilesetAsset = assets()->getAsset(tileset);
-	assert(tilesetAsset);
-	ImageAspectSP tilesetImage = assets()->getAspect<ImageAspect>(tilesetAsset);
-	assert(tilesetImage);
-	_level->tileMap()->_setTileSet(tilesetImage);
 
 	EntityRef layer = _entities.findByName("layer_base");
 	auto tileLayer = _tileLayers.get(layer);

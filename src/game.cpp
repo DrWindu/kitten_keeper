@@ -54,7 +54,7 @@ Game::Game(int argc, char** argv)
     : GameBase(argc, argv),
       _mainState(),
       _splashState(),
-      _levelPath("map0.json") {
+      _levelPath("map0.ldl") {
 	serializer().registerType<Shape2D>(
 	            static_cast<bool(*)(LdlParser&, Shape2D&)>(ldlRead),
 	            static_cast<bool(*)(LdlWriter&, const Shape2D&)>(ldlWrite));
@@ -80,11 +80,6 @@ void Game::initialize() {
 
 	if(this->argc() > 1)
 		_levelPath = this->argv()[1];
-
-#ifdef LAIR_DATA_DIR
-	_dataPath = LAIR_DATA_DIR;
-	_loader->setBasePath(_dataPath);
-#endif
 
 	window()->setUtf8Title("Lair - template");
 
