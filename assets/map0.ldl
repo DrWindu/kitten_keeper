@@ -1,5 +1,5 @@
-width = 30
-height = 17
+width = 30.0
+height = 17.0
 properties = {}
 tilesets = [
 	{
@@ -16,7 +16,7 @@ objects = [
 		type = tile_layer
 		name = 'Tile Layer 1'
 		enabled = true
-		transform = translate( 0, 0, 0.0 )
+		transform = translate( 0.0, 0.0, 0.0 )
 		tile_layer = {
 			tile_map = 'map0.ldl'
 			layer_index = 0
