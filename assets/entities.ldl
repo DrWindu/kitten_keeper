@@ -6,13 +6,12 @@ __models__ = {
 
 			// Components
 			sprite = {
-			    texture       = "Kitten1.png"
+				texture       = Texture(sprite_color, "Kitten1.png", Sampler("bilinear_no_mipmap|clamp"))
 				anchor        = Vector(.5, .5)
 				color         = Vector(1, 1, 1, 1)
 				tile_grid     = Vector(4, 3)
 				tile_index    = 10
 				blend         = alpha
-				texture_flags = "bilinear_no_mipmap | clamp"
 			}
 			collision = {
 				shape       = ABox{ min = Vector(-32, -32), size = Vector(64, 64) }
@@ -34,13 +33,12 @@ __models__ = {
 					transform = translate(32, 32)
 
 					sprite = {
-						texture       = "KittenStates.png"
+						texture       = Texture(sprite_color, "KittenStates.png", Sampler("bilinear_no_mipmap|clamp"))
 						anchor        = Vector(0, 0)
 						color         = Vector(1, 1, 1, 1)
 						tile_grid     = Vector(3, 2)
 						tile_index    = 0
 						blend         = alpha
-						texture_flags = "bilinear_no_mipmap | clamp"
 					}
 				}
 			}
@@ -48,13 +46,12 @@ __models__ = {
 
 		food_model = {
 			sprite = {
-				texture       = "gamelle.png"
+				texture       = Texture(sprite_color, "gamelle.png", Sampler("bilinear_no_mipmap|clamp"))
 				anchor        = Vector(0, 0)
 				color         = Vector(1, 1, 1, 1)
 				tile_grid     = Vector(1, 1)
 				tile_index    = 0
 				blend         = alpha
-				texture_flags = "bilinear_no_mipmap | clamp"
 			}
 			collision = {
 				shape       = ABox{ min = Vector(0, 0), size = Vector(48, 48) }
@@ -70,13 +67,12 @@ __models__ = {
 
 		toy_model = {
 			sprite = {
-				texture       = "jouet.png"
+				texture       = Texture(sprite_color, "jouet.png", Sampler("bilinear_no_mipmap|clamp"))
 				anchor        = Vector(0, 0)
 				color         = Vector(1, 1, 1, 1)
 				tile_grid     = Vector(1, 1)
 				tile_index    = 0
 				blend         = alpha
-				texture_flags = "bilinear_no_mipmap | clamp"
 			}
 			collision = {
 				shape       = ABox{ min = Vector(0, 0), size = Vector(48, 48) }
@@ -92,13 +88,12 @@ __models__ = {
 
 		litter_model = {
 			sprite = {
-				texture       = "litiere.png"
+				texture       = Texture(sprite_color, "litiere.png", Sampler("bilinear_no_mipmap|clamp"))
 				anchor        = Vector(0, 0)
 				color         = Vector(1, 1, 1, 1)
 				tile_grid     = Vector(1, 1)
 				tile_index    = 0
 				blend         = alpha
-				texture_flags = "bilinear_no_mipmap | clamp"
 			}
 			collision = {
 				shape       = ABox{ min = Vector(0, 0), size = Vector(64, 48) }
@@ -114,13 +109,12 @@ __models__ = {
 
 		pill_model = {
 			sprite = {
-				texture       = "medoc.png"
+				texture       = Texture(sprite_color, "medoc.png", Sampler("bilinear_no_mipmap|clamp"))
 				anchor        = Vector(0, 0)
 				color         = Vector(1, 1, 1, 1)
 				tile_grid     = Vector(1, 1)
 				tile_index    = 0
 				blend         = alpha
-				texture_flags = "bilinear_no_mipmap | clamp"
 			}
 			collision = {
 				shape       = ABox{ min = Vector(0, 0), size = Vector(48, 48) }
@@ -136,13 +130,12 @@ __models__ = {
 
 		basket_model = {
 			sprite = {
-				texture       = "paniere.png"
+				texture       = Texture(sprite_color, "paniere.png", Sampler("bilinear_no_mipmap|clamp"))
 				anchor        = Vector(0, 0)
 				color         = Vector(1, 1, 1, 1)
 				tile_grid     = Vector(1, 1)
 				tile_index    = 0
 				blend         = alpha
-				texture_flags = "bilinear_no_mipmap | clamp"
 			}
 			collision = {
 				shape       = ABox{ min = Vector(0, 0), size = Vector(64, 48) }

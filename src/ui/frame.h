@@ -25,9 +25,9 @@
 #include <vector>
 
 #include <lair/core/lair.h>
-#include <lair/core/shapes.h>
 
-#include <lair/render_gl2/texture.h>
+#include <lair/render_gl3/texture.h>
+#include <lair/render_gl3/texture_set.h>
 
 #include <lair/ec/sprite_renderer.h>
 
@@ -35,21 +35,21 @@ class Frame;
 
 class Frame {
 public:
-	Frame(lair::TextureAspectSP texture = nullptr,
+	Frame(lair::TextureSetCSP textureSet = nullptr,
 	      const lair::Vector4& color = lair::Vector4::Constant(1));
 
-	lair::TextureAspectSP texture() const;
+	lair::TextureSetCSP textureSet() const;
 	const lair::Vector4& color() const;
 
-	void setTexture(lair::TextureAspectSP texture);
+	void setTextureSet(lair::TextureSetCSP textureSet);
 	void setColor(const lair::Vector4& color);
 
 	void render(lair::RenderPass& renderPass, lair::SpriteRenderer* renderer,
 	            const lair::Matrix4& transform, const lair::Box2& box, float depth);
 
 protected:
-	lair::TextureAspectWP _texture;
-	lair::Vector4         _color;
+	lair::TextureSetCSP _textureSet;
+	lair::Vector4       _color;
 };
 
 

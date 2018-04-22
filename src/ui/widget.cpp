@@ -83,8 +83,13 @@ Vector2 Widget::size() const {
 	return _box.sizes();
 }
 
+TextureSetCSP Widget::frameTextureSet() const {
+	return _frame.textureSet();
+}
+
 TextureAspectSP Widget::frameTexture() const {
-	return _frame.texture();
+	const TextureBinding* binding = _frame.textureSet()->get(TexColor);
+	return binding? binding->texture: TextureAspectSP();
 }
 
 Vector4 Widget::frameColor() const {
@@ -135,17 +140,18 @@ void Widget::setMargin(float top, float right, float bottom, float left) {
 	_marginMax = Vector2(right, top);
 }
 
-void Widget::setFrameTexture(TextureAspectSP texture) {
-	_frame.setTexture(texture);
+void Widget::setFrameTextureSet(TextureSetCSP textureSet) {
+	_frame.setTextureSet(textureSet);
+}
+
+void Widget::setFrameTexture(lair::TextureAspectSP texture) {
+	setFrameTextureSet(gui()->spriteRenderer()->getTextureSet(
+	                       TexColor, texture, gui()->spriteRenderer()->defaultSampler()));
 }
 
 void Widget::setFrameTexture(AssetSP texture) {
 	if(texture) {
-		TextureAspectSP ta = texture->aspect<TextureAspect>();
-		if(!ta) {
-			ta = gui()->spriteRenderer()->createTexture(texture);
-		}
-		setFrameTexture(ta);
+		setFrameTexture(gui()->spriteRenderer()->createTexture(texture));
 	}
 	else {
 		setFrameTexture(TextureAspectSP());

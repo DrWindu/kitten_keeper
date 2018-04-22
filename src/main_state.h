@@ -30,8 +30,8 @@
 #include <lair/utils/input.h>
 #include <lair/utils/tile_map.h>
 
-#include <lair/render_gl2/orthographic_camera.h>
-#include <lair/render_gl2/render_pass.h>
+#include <lair/render_gl3/orthographic_camera.h>
+#include <lair/render_gl3/render_pass.h>
 
 #include <lair/ec/entity.h>
 #include <lair/ec/entity_manager.h>
@@ -58,7 +58,7 @@ class GameView;
 class ToyButton;
 
 typedef std::shared_ptr<Level> LevelSP;
-typedef std::unordered_map<Path, LevelSP, boost::hash<Path>> LevelMap;
+typedef std::unordered_map<Path, LevelSP, Hash<Path>> LevelMap;
 
 enum {
 	TICKS_PER_SEC  = 60,

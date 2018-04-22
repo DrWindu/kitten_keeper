@@ -58,7 +58,7 @@ MainState::MainState(Game* game)
       _guiPass(renderer()),
 
       _entities(log(), _game->serializer()),
-      _spriteRenderer(renderer()),
+      _spriteRenderer(loader(), renderer()),
 
       _sprites(assets(), loader(), &_mainPass, &_spriteRenderer),
       _collisions(),
@@ -128,7 +128,8 @@ void MainState::initialize() {
 
 	_loop.reset();
 	_loop.setTickDuration(    ONE_SEC /  TICKS_PER_SEC);
-	_loop.setFrameDuration(   ONE_SEC /  FRAMES_PER_SEC);
+//	_loop.setFrameDuration(   ONE_SEC /  FRAMES_PER_SEC);
+	_loop.setFrameDuration(   0);
 	_loop.setMaxFrameDuration(_loop.frameDuration() * 3);
 	_loop.setFrameMargin(     _loop.frameDuration() / 2);
 
@@ -200,7 +201,7 @@ void MainState::initialize() {
 	_menu->setName("menu");
 	_menu->resize(Vector2(1920, 96));
 	_menu->setFrameTexture("white.png");
-	_menu->setFrameColor(Vector4(.8, .6, .3, 1));
+	_menu->setFrameColor(srgba(.8, .6, .3, 1));
 
 	_foodButton   = createToyButton(_foodModel, "Food (Q)", "gamelle.png",
 	                                "Because kittens need to eat. Can I haz Cheezburger ?");
@@ -216,7 +217,7 @@ void MainState::initialize() {
 	_happinessLabel = _menu->createChild<Label>();
 	_happinessLabel->setName("happiness");
 	_happinessLabel->setFont(font);
-	_happinessLabel->textInfo().setColor(Vector4(0, 0, 0, 1));
+	_happinessLabel->textInfo().setColor(srgba(0, 0, 0, 1));
 	_happinessLabel->setText("Happiness: 100%");
 	_happinessLabel->resizeToText();
 	_toyButtonPos(0) += 24;
@@ -226,7 +227,7 @@ void MainState::initialize() {
 	_moneyLabel = _menu->createChild<Label>();
 	_moneyLabel->setName("money");
 	_moneyLabel->setFont(font);
-	_moneyLabel->textInfo().setColor(Vector4(0, 0, 0, 1));
+	_moneyLabel->textInfo().setColor(srgba(0, 0, 0, 1));
 	_moneyLabel->setText("Money: 999999$");
 	_moneyLabel->resizeToText();
 	_moneyLabel->place(_toyButtonPos + Vector2(0, 80 - _moneyLabel->size()(1)) / 2);
@@ -235,7 +236,7 @@ void MainState::initialize() {
 	_catLabel = _menu->createChild<Label>();
 	_catLabel->setName("cat");
 	_catLabel->setFont(font);
-	_catLabel->textInfo().setColor(Vector4(0, 0, 0, 1));
+	_catLabel->textInfo().setColor(srgba(0, 0, 0, 1));
 	_catLabel->setText("Cats: 999, Deaths: 999");
 	_catLabel->resizeToText();
 	_catLabel->place(_toyButtonPos + Vector2(0, 80 - _catLabel->size()(1)) / 2);
@@ -244,32 +245,32 @@ void MainState::initialize() {
 	_dialog = _gui.createWidget<Widget>();
 	_dialog->setEnabled(false);
 	_dialog->setFrameTexture("frame.png");
-	_dialog->setFrameColor(Vector4(0, 0, 0, .8));
+	_dialog->setFrameColor(srgba(0, 0, 0, .8));
 
 	_dialogText = _dialog->createChild<Label>();
 	_dialogText->setFont(font);
-	_dialogText->textInfo().setColor(Vector4(1, 1, 1, 1));
+	_dialogText->textInfo().setColor(srgba(1, 1, 1, 1));
 
 	_dialogButton = _dialog->createChild<Label>();
 	_dialogButton->setFrameTexture("frame.png");
-	_dialogButton->setFrameColor(Vector4(.5, .6, .7, 1));
+	_dialogButton->setFrameColor(srgba(.5, .6, .7, 1));
 	_dialogButton->setFont(font);
-	_dialogButton->textInfo().setColor(Vector4(1, 1, 1, 1));
+	_dialogButton->textInfo().setColor(srgba(1, 1, 1, 1));
 	_dialogButton->setMargin(32, 16);
 	_dialogButton->onMouseUp = std::bind(&MainState::closeDialog, this);
 	_dialogButton->onMouseEnter = [this](Widget*, HoverEvent& e) {
-		_dialogButton->setFrameColor(Vector4(.6, .7, .8, 1));
+		_dialogButton->setFrameColor(srgba(.6, .7, .8, 1));
 		e.accept();
 	};
 	_dialogButton->onMouseLeave = [this](Widget*, HoverEvent& e) {
-		_dialogButton->setFrameColor(Vector4(.5, .6, .7, 1));
+		_dialogButton->setFrameColor(srgba(.5, .6, .7, 1));
 		e.accept();
 	};
 
 	loader()->waitAll();
 
 	// Set to true to debug OpenGL calls
-	renderer()->context()->setLogCalls(false);
+//	renderer()->context()->setLogCalls(true);
 
 	_initialized = true;
 }
@@ -407,17 +408,6 @@ void MainState::setLevel(const Path& level) {
 
 	registerLevel(level);
 	loader()->waitAll();
-
-	for(auto& pathLevel: _levelMap) {
-		LevelSP level = pathLevel.second;
-		AssetSP levelAsset = assets()->getAsset(level->path());
-		TileMap& tileMap = assets()->getAspect<TileMapAspect>(levelAsset)->_get();
-
-		Path tileset = tileMap.properties().get("tileset", "tileset.png").asString();
-		loader()->load<ImageLoader>(tileset);
-	}
-
-	loader()->waitAll();
 }
 
 
@@ -440,17 +430,10 @@ void MainState::loadLevel(const Path& level) {
 	_level = _levelMap.at(level);
 	_level->initialize();
 
-	Path tileset = _level->tileMap()->properties().get("tileset", "tileset.png").asString();
-	AssetSP tilesetAsset = assets()->getAsset(tileset);
-	assert(tilesetAsset);
-	ImageAspectSP tilesetImage = assets()->getAspect<ImageAspect>(tilesetAsset);
-	assert(tilesetImage);
-	_level->tileMap()->_setTileSet(tilesetImage);
-
 	EntityRef layer = _entities.findByName("layer_base");
 	auto tileLayer = _tileLayers.get(layer);
 	tileLayer->setBlendingMode(BLEND_ALPHA);
-	tileLayer->setTextureFlags(Texture::BILINEAR_NO_MIPMAP | Texture::CLAMP);
+//	tileLayer->setTextureFlags(Texture::BILINEAR_NO_MIPMAP | Texture::CLAMP);
 
 	layer.setEnabled(true);
 
@@ -710,16 +693,16 @@ void MainState::updateTick() {
 #endif
 
 	if(_state == STATE_PLAY) {
-//		if(_foodInput->justPressed())
-//			_gameView->createToy(_foodModel);
-//		if(_toyInput->justPressed())
-//			_gameView->createToy(_toyModel);
-//		if(_litterInput->justPressed())
-//			_gameView->createToy(_litterModel);
-//		if(_medecineInput->justPressed())
-//			_gameView->createToy(_pillModel);
-//		if(_basketInput->justPressed())
-//			_gameView->createToy(_basketModel);
+		if(_foodInput->justPressed())
+			_gameView->createToy(_foodModel);
+		if(_toyInput->justPressed())
+			_gameView->createToy(_toyModel);
+		if(_litterInput->justPressed())
+			_gameView->createToy(_litterModel);
+		if(_medecineInput->justPressed())
+			_gameView->createToy(_pillModel);
+		if(_basketInput->justPressed())
+			_gameView->createToy(_basketModel);
 
 		_kittens.update();
 		_toys.update();
@@ -782,20 +765,27 @@ void MainState::updateFrame() {
 	_tileLayers.createTextures();
 	_gui.preRender();
 	renderer()->uploadPendingTextures();
+	_spriteRenderer.finalizeShaders();
 
 	glc->clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 
-	_mainPass.clear();
-	_guiPass.clear();
-	_spriteRenderer.clear();
+	bool buffersFilled = false;
+	while(!buffersFilled) {
+		_mainPass.clear();
+		_guiPass.clear();
 
-	_sprites.render(_entities.root(), _loop.frameInterp(), _camera);
-	_texts.render(_entities.root(), _loop.frameInterp(), _camera);
-	_tileLayers.render(_entities.root(), _loop.frameInterp(), _camera);
+		_spriteRenderer.beginRender();
 
-	OrthographicCamera guiCamera;
-	guiCamera.setViewBox(Box3(Vector3(0, 0, 0), Vector3(1920, 1080, 1)));
-	_gui.render(_guiPass, guiCamera.transform());
+		_sprites.render(_entities.root(), _loop.frameInterp(), _camera);
+		_texts.render(_entities.root(), _loop.frameInterp(), _camera);
+		_tileLayers.render(_entities.root(), _loop.frameInterp(), _camera);
+
+		OrthographicCamera guiCamera;
+		guiCamera.setViewBox(Box3(Vector3(0, 0, 0), Vector3(1920, 1080, 1)));
+		_gui.render(_guiPass, guiCamera.transform());
+
+		buffersFilled = _spriteRenderer.endRender();
+	}
 
 	_mainPass.render();
 
@@ -803,13 +793,15 @@ void MainState::updateFrame() {
 	_guiPass.render();
 	glc->enable(gl::DEPTH_TEST);
 
+
 	window()->swapBuffers();
-	glc->setLogCalls(false);
+//	glc->setLogCalls(true);
 
 	int64 now = int64(sys()->getTimeNs());
 	++_fpsCount;
-	if(_fpsCount == 60) {
-		log().info("Fps: ", _fpsCount * float(ONE_SEC) / (now - _fpsTime));
+	int64 etime = now - _fpsTime;
+	if(etime >= ONE_SEC) {
+		log().info("Fps: ", _fpsCount * float(ONE_SEC) / etime);
 		_fpsTime  = now;
 		_fpsCount = 0;
 	}

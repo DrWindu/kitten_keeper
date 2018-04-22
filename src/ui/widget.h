@@ -26,9 +26,10 @@
 #include <functional>
 
 #include <lair/core/lair.h>
-#include <lair/core/shapes.h>
 
-#include <lair/render_gl2/texture.h>
+#include <lair/geometry/aligned_box.h>
+
+#include <lair/render_gl3/texture.h>
 
 #include <lair/ec/sprite_renderer.h>
 
@@ -54,6 +55,7 @@ public:
 	lair::Vector2 absolutePosition() const;
 	lair::Vector2 size() const;
 	lair::Box2 absoluteBox() const;
+	lair::TextureSetCSP frameTextureSet() const;
 	lair::TextureAspectSP frameTexture() const;
 	lair::Vector4 frameColor() const;
 
@@ -70,6 +72,7 @@ public:
 	void setMargin(float hMargin, float vMargin);
 	void setMargin(float top, float right, float bottom, float left);
 
+	void setFrameTextureSet(lair::TextureSetCSP textureSet);
 	void setFrameTexture(lair::TextureAspectSP texture);
 	void setFrameTexture(lair::AssetSP texture);
 	void setFrameTexture(const lair::Path& logicPath);

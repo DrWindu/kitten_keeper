@@ -19,7 +19,11 @@
  */
 
 
-#include "lair/core/property.h"
+#include <lair/core/property.h>
+
+#include <lair/render_gl3/texture_set.h>
+
+#include <lair/ec/collision_component.h>
 
 #include "main_state.h"
 #include "splash_state.h"
@@ -50,9 +54,20 @@ Game::Game(int argc, char** argv)
     : GameBase(argc, argv),
       _mainState(),
       _splashState(),
-      _levelPath("map0.json") {
-	serializer().registerType<Shape2D>();
-	serializer().registerType<Shape2DVector>();
+      _levelPath("map0.ldl") {
+	serializer().registerType<Shape2D>(
+	            static_cast<bool(*)(LdlParser&, Shape2D&)>(ldlRead),
+	            static_cast<bool(*)(LdlWriter&, const Shape2D&)>(ldlWrite));
+	serializer().registerType<Shape2DVector>(
+	            static_cast<bool(*)(LdlParser&, Shape2DVector&)>(ldlRead),
+	            static_cast<bool(*)(LdlWriter&, const Shape2DVector&)>(ldlWrite));
+
+	serializer().registerType<TextureSetCSP>(
+	    [this](LdlParser& parser, TextureSetCSP& ts) {
+		    return ldlRead(parser, ts, _renderer, _loader.get());
+	    },
+	    static_cast<bool(*)(LdlWriter&, const TextureSetCSP&)>(ldlWrite)
+	);
 }
 
 
@@ -66,11 +81,6 @@ void Game::initialize() {
 	if(this->argc() > 1)
 		_levelPath = this->argv()[1];
 
-#ifdef LAIR_DATA_DIR
-	_dataPath = LAIR_DATA_DIR;
-	_loader->setBasePath(_dataPath);
-#endif
-
 	window()->setUtf8Title("Lair - template");
 
 	_splashState.reset(new SplashState(this));
@@ -82,7 +92,6 @@ void Game::initialize() {
 
 	_mainState->initialize();
 	_mainState->setLevel(_levelPath);
-
 }
 
 

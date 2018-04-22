@@ -33,7 +33,6 @@ Text::Text(BitmapFontAspectSP font, const Vector4& color)
     , _layout()
     , _anchor(0, 1)
     , _blendingMode(BLEND_ALPHA)
-    , _textureFlags(Texture::BILINEAR_NO_MIPMAP)
 {
 }
 
@@ -51,10 +50,6 @@ const Vector2& Text::anchor() const {
 
 BlendingMode Text::blendingMode() const {
 	return _blendingMode;
-}
-
-unsigned Text::textureFlags() const {
-	return _textureFlags;
 }
 
 lair::Vector2 Text::textSize(const lair::String& text, int width) const {
@@ -83,14 +78,16 @@ void Text::setBlendingMode(BlendingMode blendingMode) {
 	_blendingMode = blendingMode;
 }
 
-void Text::setTextureFlags(unsigned textureFlags) {
-	_textureFlags = textureFlags;
-}
-
 void Text::preRender(lair::SpriteRenderer* renderer) {
 	BitmapFontAspectSP font = _font.lock();
-	if(font && !_texture.lock() && font->isValid())
-		_texture = renderer->createTexture(font->get().image());
+	if(font && !_textureSet && font->isValid()) {
+		TextureBinding bindings[] = {
+		    { TexColor, renderer->defaultSampler(),
+		      renderer->createTexture(font->get().image()) },
+		    LAIR_TEXTURE_BINDING_END
+		};
+		_textureSet = renderer->getTextureSet(TextureSet(bindings));
+	}
 }
 
 void Text::render(RenderPass& renderPass, SpriteRenderer* renderer,
@@ -104,10 +101,9 @@ void Text::render(RenderPass& renderPass, SpriteRenderer* renderer,
 	if(!font.image())
 		return;
 
-	TextureAspectSP texAspect = _texture.lock();
-	if(!texAspect) {
-		dbgLogger.warning("Texture ", font.image()->logicPath(), " not found.");
-		texAspect = renderer->defaultTexture();
+	TextureSetCSP textureSet = _textureSet;
+	if(!textureSet || !textureSet->getTextureOrWarn(TexColor, dbgLogger)) {
+		textureSet = renderer->defaultTextureSet();
 	}
 
 	Matrix4 transform = Matrix4::Identity();
@@ -117,6 +113,6 @@ void Text::render(RenderPass& renderPass, SpriteRenderer* renderer,
 
 	TextLayout layout = font.layoutText(text, width);
 
-	renderBitmapText(&renderPass, renderer, font, &texAspect->_get(), transform, 1 - depth,
-	                 layout, _anchor, _color, viewTransform, _textureFlags, _blendingMode);
+	renderBitmapText(&renderPass, renderer, font, textureSet, transform, 1 - depth,
+	                 layout, _anchor, _color, viewTransform, _blendingMode);
 }

@@ -25,9 +25,8 @@
 #include <vector>
 
 #include <lair/core/lair.h>
-#include <lair/core/shapes.h>
 
-#include <lair/render_gl2/texture.h>
+#include <lair/render_gl3/texture.h>
 
 #include <lair/ec/sprite_renderer.h>
 
