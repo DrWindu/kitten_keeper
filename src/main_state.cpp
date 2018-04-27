@@ -630,11 +630,13 @@ EntityRef MainState::spawnKitten(const Vector2& pos) {
 		CollisionComponent* coll = _collisions.get(kitten);
 		lairAssert(coll);
 
+		TileLayerCSP tileLayer = _level->tileMap()->tileLayer(0);
+
 		AlignedBox2 box;
 		int tries = 0;
 		do {
-			kitten.placeAt(Vector2(rand() % (_level->tileMap()->width(0) * TILE_SIZE),
-			                       rand() % (_level->tileMap()->height(0) * TILE_SIZE)));
+			kitten.placeAt(Vector2(rand() % (tileLayer->widthInTiles() * TILE_SIZE),
+			                       rand() % (tileLayer->heightInTiles() * TILE_SIZE)));
 			box = coll->shapes()[0].transformed(kitten.worldTransform()).boundingBox();
 			++tries;
 		} while(_level->hitTest(box) && tries < 10);

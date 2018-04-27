@@ -90,10 +90,11 @@ void Level::initialize() {
 	_levelRoot = _mainState->_entities.createEntity(_mainState->_scene, _path.utf8CStr());
 	_levelRoot.setEnabled(false);
 
+	TileLayerCSP tileLayer = _tileMap->tileLayer(_tileMap->nLayers() - 1);
 	_mainState->_collisions.setBounds(
 	            AlignedBox2(Vector2(0, 0),
-	                        Vector2(_tileMap->width(0)  * TILE_SIZE,
-	                                _tileMap->height(0) * TILE_SIZE)));
+	                        Vector2(tileLayer->widthInTiles()  * TILE_SIZE,
+	                                tileLayer->heightInTiles() * TILE_SIZE)));
 
 	_baseLayer = createLayer(_tileMap->nLayers() - 1, "layer_base");
 	_objects = _mainState->_entities.createEntity(_levelRoot, "objects");
@@ -155,11 +156,13 @@ void Level::stop() {
 
 
 TileMap::TileIndex Level::getTile (const Vector2& pos) const {
-	Vector2i tilexy = cellCoord(pos, _tileMap->height(0));
+	TileLayerCSP tileLayer = _tileMap->tileLayer(0);
+
+	Vector2i tilexy = cellCoord(pos, tileLayer->heightInTiles());
 	
-	if(tilexy(0) >= 0 && unsigned(tilexy(0)) < _tileMap->width(0)
-	&& tilexy(1) >= 0 && unsigned(tilexy(1)) < _tileMap->height(0))
-		return _tileMap->tile(tilexy[0], tilexy[1], 0);
+	if(tilexy(0) >= 0 && unsigned(tilexy(0)) < tileLayer->widthInTiles()
+	&& tilexy(1) >= 0 && unsigned(tilexy(1)) < tileLayer->heightInTiles())
+		return tileLayer->tile(tilexy[0], tilexy[1]);
 	return 0;
 }
 
@@ -170,9 +173,10 @@ bool Level::inSolid (const Vector2& pos) const {
 
 
 bool Level::hitTest(const AlignedBox2& box) const {
-	int layer = 0;
-	int width  = _tileMap->width (layer);
-	int height = _tileMap->height(layer);
+	TileLayerCSP tileLayer = _tileMap->tileLayer(0);
+
+	int width  = tileLayer->widthInTiles();
+	int height = tileLayer->heightInTiles();
 	Vector2i begin(std::floor(box.min()(0) / TILE_SIZE),
 	               height - std::ceil (box.max()(1) / TILE_SIZE));
 	Vector2i end  (std::ceil (box.max()(0) / TILE_SIZE),
@@ -181,7 +185,7 @@ bool Level::hitTest(const AlignedBox2& box) const {
 	for(int y = begin(1); y < end(1); ++y) {
 		for(int x = begin(0); x < end(0); ++x) {
 			if(x < 0 || x >= width || y < 0 || y >= height
-			|| isSolid(_tileMap->tile(x, y, layer))) {
+			|| isSolid(tileLayer->tile(x, y))) {
 				return true;
 			}
 		}
@@ -200,7 +204,7 @@ Box2 Level::objectBox(const Json::Value& obj) const {
 		Vector2 max(min(0) + obj["width"] .asFloat(),
 		            min(1) + obj["height"].asFloat());
 
-		float height = _tileMap->height(0) * TILE_SIZE;
+		float height = _tileMap->tileLayer(0)->widthInTiles() * TILE_SIZE;
 		return flipY(Box2(min, max), height);
 	}
 	catch(Json::Exception& e) {
